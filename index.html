@@ -3,217 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>楊修必修死</title>
+    <title>2B: SYSTEM ACCESS</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           CSS: 2024 玻璃擬態 & 流動漸層風格
+           CSS: Cyberpunk / Sci-Fi HUD 風格
            ========================================= */
         :root {
-            --primary-bg: #0f172a;
-            --card-glass: rgba(255, 255, 255, 0.08);
-            --card-border: rgba(255, 255, 255, 0.15);
-            --text-main: #ffffff;
-            --text-sec: #94a3b8;
-            --accent-gradient: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
+            --bg-dark: #050a10;
+            --neon-cyan: #00f3ff;
+            --neon-pink: #bc13fe;
+            --glass-panel: rgba(0, 243, 255, 0.05);
+            --border-color: rgba(0, 243, 255, 0.3);
+            --text-main: #e0f7fa;
         }
 
         body {
             margin: 0; padding: 0;
-            font-family: 'Poppins', 'Noto Sans TC', sans-serif;
-            background-color: var(--primary-bg);
+            font-family: 'Share Tech Mono', monospace; /* 數據感字體 */
+            background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
             
-            /* 極光流動背景動畫 */
-            background: linear-gradient(-45deg, #020617, #1e1b4b, #312e81, #0f172a);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            /* 科技網格背景 */
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* 標題區 */
+        /* 標題區：HUD 介面感 */
         header {
-            padding: 80px 20px 40px;
+            padding: 40px 20px 20px;
             text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: relative;
+        }
+        
+        /* 掃描線動畫 */
+        header::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
         }
 
         h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
             margin: 0;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3));
-        }
-
-        .subtitle {
-            margin-top: 10px;
-            font-size: 1.1rem;
-            color: var(--text-sec);
-            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan);
+            letter-spacing: 4px;
             text-transform: uppercase;
         }
 
-        /* Grid 佈局 */
+        .sys-status {
+            font-size: 0.9rem; color: var(--neon-cyan); margin-top: 5px;
+            letter-spacing: 2px; opacity: 0.8;
+        }
+        .blink { animation: blinker 1.5s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        /* =========================================
+           Grid 設定：更密集，縮小尺寸
+           ========================================= */
         .grid-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 40px;
+            padding: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 40px;
-            perspective: 1000px;
+            /* 這裡控制大小：minmax(160px) 讓書本變小，每行塞更多 */
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px; 
         }
 
-        /* 玻璃卡片設計 */
+        /* =========================================
+           卡片設計：資料晶片 (Data Chip) 風格
+           ========================================= */
         .book-card {
             position: relative;
-            background: var(--card-glass);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 15px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(10, 20, 30, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 8px;
             cursor: pointer;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            transition: all 0.3s ease;
+            
+            /* 切角效果 (Clip-path) */
+            clip-path: polygon(
+                0 0, 
+                100% 0, 
+                100% calc(100% - 15px), 
+                calc(100% - 15px) 100%, 
+                0 100%
+            );
+        }
+
+        /* 裝飾角落 */
+        .book-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--border-color); transition: 0.3s;
         }
 
         .book-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(129, 140, 248, 0.25); /* 霓虹發光 */
-            border-color: rgba(255, 255, 255, 0.4);
-            z-index: 10;
+            transform: translateY(-5px);
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
         }
+        
+        .book-card:hover::before { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
 
         .cover-wrapper {
             width: 100%;
             aspect-ratio: 3/4;
-            border-radius: 16px;
             overflow: hidden;
-            background: rgba(0,0,0,0.2);
+            margin-bottom: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
             position: relative;
         }
-
+        
+        /* 圖片覆蓋一層科技藍色濾鏡，hover 時還原 */
         .book-img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
+            width: 100%; height: 100%; object-fit: cover;
+            filter: grayscale(40%) contrast(1.1);
+            transition: 0.4s;
         }
+        .book-card:hover .book-img { filter: grayscale(0%) contrast(1); }
 
-        .book-card:hover .book-img {
-            transform: scale(1.1);
-        }
-
-        /* 裝飾光效 */
-        .glow-deco {
-            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            opacity: 0; transform: rotate(45deg); transition: opacity 0.4s; pointer-events: none;
-        }
-        .book-card:hover .glow-deco { opacity: 1; }
-
-        .card-info { padding: 20px 10px 10px; text-align: center; }
+        .card-info { text-align: left; padding-left: 8px; }
+        
         .book-title {
-            font-size: 1.3rem; margin: 0; color: #fff; font-weight: 700;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem; font-weight: 700; color: #fff;
+            margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .book-meta { font-size: 0.9rem; color: var(--text-sec); margin-top: 5px; }
+        .book-meta {
+            font-size: 0.75rem; color: var(--neon-cyan); margin-top: 2px;
+            display: flex; justify-content: space-between;
+        }
 
-        /* 閱讀器介面 (全螢幕遮罩) */
+        /* =========================================
+           閱讀器：戰術介面 (Tactical View)
+           ========================================= */
         .reader-overlay {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(2, 6, 23, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none;
-            transition: all 0.4s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 16, 0.95);
+            backdrop-filter: blur(10px); z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+            
+            /* 閱讀器背景網格 */
+            background-image: radial-gradient(circle, transparent 20%, #000 120%);
         }
         .reader-overlay.active { opacity: 1; pointer-events: auto; }
 
         .reader-stage {
-            position: relative; width: 100%; height: 80vh;
+            position: relative; width: 100%; height: 85vh;
             display: flex; justify-content: center; align-items: center;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .reader-img {
-            max-width: 90%; max-height: 100%;
-            border-radius: 12px;
-            box-shadow: 0 0 60px rgba(0,0,0,0.6);
-            opacity: 0; transform: scale(0.95);
-            transition: all 0.4s ease;
+            max-width: 95%; max-height: 100%;
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
         }
-        .reader-img.loaded { opacity: 1; transform: scale(1); }
 
-        /* 按鈕樣式 */
+        /* 科技感按鈕 */
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            width: 60px; height: 60px; border-radius: 50%;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: white; font-size: 1.5rem; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: 0.3s; z-index: 10; backdrop-filter: blur(5px);
+            width: 50px; height: 80px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 1.5rem; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 10; transition: 0.2s;
+            clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%); /* 多邊形按鈕 */
         }
-        .nav-btn:hover { background: white; color: #0f172a; box-shadow: 0 0 20px rgba(255,255,255,0.5); }
-        .prev-btn { left: 40px; }
-        .next-btn { right: 40px; }
+        .nav-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+        .prev-btn { left: 20px; } .next-btn { right: 20px; }
 
         .close-btn {
-            position: absolute; top: 30px; right: 30px;
-            width: 50px; height: 50px; border-radius: 50%;
-            background: rgba(255,0,0,0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
+            position: absolute; top: 20px; right: 20px;
+            font-family: 'Orbitron'; color: #ff3333; font-size: 1.2rem; cursor: pointer;
+            border: 1px solid #ff3333; padding: 5px 15px;
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s;
         }
-        .close-btn:hover { background: #ef4444; color: white; transform: rotate(90deg); }
+        .close-btn:hover { background: #ff3333; color: #000; box-shadow: 0 0 15px #ff3333; }
 
-        /* 進度條 */
-        .progress-container {
-            position: absolute; bottom: 40px; width: 100%;
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        .progress-bar-container {
+            position: absolute; bottom: 0; width: 100%; height: 4px; background: #111;
         }
-        .progress-bar-bg { width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
         .progress-bar {
-            height: 100%; background: var(--accent-gradient); width: 0%; transition: width 0.3s;
+            height: 100%; background: var(--neon-cyan); width: 0%;
+            box-shadow: 0 0 10px var(--neon-cyan); transition: width 0.2s;
         }
-        .page-info { font-size: 0.9rem; color: var(--text-sec); letter-spacing: 1px; }
+        .page-data {
+            position: absolute; bottom: 20px; right: 30px;
+            font-family: 'Orbitron'; color: var(--neon-cyan); font-size: 1.2rem;
+        }
 
-        @media(max-width: 768px) {
-            .grid-container { grid-template-columns: repeat(2, 1fr); padding: 20px; gap: 20px; }
-            h1 { font-size: 2.5rem; }
-            .nav-btn { width: 45px; height: 45px; font-size: 1.2rem; }
-            .prev-btn { left: 10px; } .next-btn { right: 10px; }
-        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Class 2B</h1>
-    <div class="subtitle">Digital Library Archive</div>
+    <h1>2B ARCHIVE</h1>
+    <div class="sys-status">SYSTEM STATUS: <span class="blink" style="color:#0f0;">ONLINE</span> // ACCESS GRANTED</div>
 </header>
 
 <div class="grid-container" id="bookGrid"></div>
 
 <div class="reader-overlay" id="readerOverlay">
-    <div class="close-btn" onclick="closeBook()">✕</div>
+    <div class="close-btn" onclick="closeBook()">[ TERMINATE ]</div>
     
     <div class="reader-stage">
         <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
@@ -221,68 +232,68 @@
         <div class="nav-btn next-btn" onclick="changePage(1)">❯</div>
     </div>
 
-    <div class="progress-container">
-        <div class="page-info" id="pageInfo"></div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
+    <div class="page-data" id="pageInfo">00 / 00</div>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // 1. 設定區域 (與您習慣的 Logic 相同)
+    // 1. 設定區域 (LOGIC 不變)
     // ==========================================
-    
-    // 主資料夾名稱
     const rootFolder = '2B'; 
 
-    // 書籍資料：只需要設定 [資料夾名稱] 與 [頁數]
-    // Script 會自動算出路徑： 2B/gp1/1.png, 2B/gp1/2.png ...
     const bookData = [
-        { folder: '2B第1組', title: '2B第1組', count: 13 }, // title 是顯示在畫面上的書名
-        { folder: '2B第1組', title: '2B第2組', count: 12 },
-        { folder: 'gp3', title: 'Group 3', count: 8 },
-        // 在這裡複製貼上增加新書...
+        // 為了展示密集效果，我多複製了幾組，你可以改成你真實的資料
+        { folder: '2B第1組', title: '2B第1組', count: 13 },
+        { folder: '2B第2組', title: '2B第2組', count: 12 },
+        { folder: 'gp3', title: 'PROJECT-03', count: 8 },
+        { folder: 'gp1', title: 'DATA-LOG 04', count: 5 },
+        { folder: 'gp2', title: 'DATA-LOG 05', count: 12 },
+        { folder: 'gp3', title: 'DATA-LOG 06', count: 8 },
+        { folder: 'gp1', title: 'ARCHIVE-X', count: 5 },
+        { folder: 'gp2', title: 'ARCHIVE-Y', count: 12 },
     ];
 
     // ==========================================
-    // 2. 自動產生書架系統
+    // 2. 系統邏輯
     // ==========================================
     const grid = document.getElementById('bookGrid');
 
-    // 將簡易設定轉換為完整路徑資料
-    bookData.forEach(item => {
-        // 1. 產生封面路徑
+    bookData.forEach((item, idx) => {
+        // 產生路徑
         const coverPath = `${rootFolder}/${item.folder}/b.png`;
-        
-        // 2. 產生內頁路徑陣列
         const pages = [];
         for (let i = 1; i <= item.count; i++) {
             pages.push(`${rootFolder}/${item.folder}/${i}.png`);
         }
+        
+        // 產生像 "ID: 001" 這樣的裝飾編號
+        const idStr = (idx + 1).toString().padStart(3, '0');
 
-        // 3. 建立 HTML 卡片
         const card = document.createElement('div');
         card.className = 'book-card';
-        // 點擊時傳送內頁資料給閱讀器
         card.onclick = () => openBook(pages);
         
+        // HTML 結構調整為更有科技感的排版
         card.innerHTML = `
-            <div class="glow-deco"></div>
             <div class="cover-wrapper">
                 <img src="${coverPath}" class="book-img" loading="lazy" alt="${item.title}" onerror="this.src='${pages[0] || ''}'">
             </div>
             <div class="card-info">
                 <h3 class="book-title">${item.title}</h3>
-                <div class="book-meta">${item.count} Pages</div>
+                <div class="book-meta">
+                    <span>ID:${idStr}</span>
+                    <span>SIZE:${item.count}</span>
+                </div>
             </div>
         `;
         grid.appendChild(card);
     });
 
     // ==========================================
-    // 3. 閱讀器邏輯 (Modern Reader)
+    // 3. 閱讀器邏輯
     // ==========================================
     let currentPages = [];
     let currentIndex = 0;
@@ -298,17 +309,13 @@
         if (!pages || pages.length === 0) return;
         currentPages = pages;
         currentIndex = 0;
-        
         overlay.classList.add('active');
         loadPage(currentIndex);
     }
 
     function closeBook() {
         overlay.classList.remove('active');
-        setTimeout(() => { 
-            readerImg.src = ''; 
-            readerImg.classList.remove('loaded');
-        }, 300);
+        setTimeout(() => { readerImg.src = ''; }, 300);
     }
 
     function changePage(dir) {
@@ -320,43 +327,37 @@
 
     function loadPage(index) {
         currentIndex = index;
-        
-        // 切換效果：先稍微淡出
-        readerImg.classList.remove('loaded');
+        readerImg.style.opacity = '0.5'; // 切換時微閃爍效果
         
         const tempImg = new Image();
         tempImg.src = currentPages[index];
-        
         tempImg.onload = () => {
             readerImg.src = currentPages[index];
-            readerImg.classList.add('loaded'); // 載入完畢後淡入
+            readerImg.style.opacity = '1';
             updateControls();
         };
     }
 
     function updateControls() {
-        // 更新文字
-        pageInfo.innerText = `${currentIndex + 1} / ${currentPages.length}`;
+        // 格式化頁碼為 01 / 10 的樣式
+        const currStr = (currentIndex + 1).toString().padStart(2, '0');
+        const totalStr = currentPages.length.toString().padStart(2, '0');
+        pageInfo.innerText = `${currStr} / ${totalStr}`;
         
-        // 更新進度條寬度
         const percentage = ((currentIndex + 1) / currentPages.length) * 100;
         progressBar.style.width = `${percentage}%`;
 
-        // 按鈕顯示控制
         prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
         nextBtn.style.visibility = currentIndex === currentPages.length - 1 ? 'hidden' : 'visible';
     }
 
-    // 鍵盤控制
     document.addEventListener('keydown', (e) => {
         if (!overlay.classList.contains('active')) return;
         if (e.key === 'ArrowLeft') changePage(-1);
         if (e.key === 'ArrowRight') changePage(1);
         if (e.key === 'Escape') closeBook();
     });
-
 </script>
 
 </body>
 </html>
-
