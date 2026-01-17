@@ -10,13 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
+        /* =========================================
+           基本設定 (維持 Cyberpunk 深色系)
+           ========================================= */
         :root {
-            --bg-dark: #050a10;
+            --bg-dark: #101010;
             --neon-cyan: #00f3ff;
-            --neon-magenta: #ff00ff;
-            --grid-color: rgba(0, 243, 255, 0.1);
-            --border-color: rgba(0, 243, 255, 0.3);
             --text-main: #e0f7fa;
+            --border-color: rgba(255, 255, 255, 0.2);
         }
 
         body {
@@ -25,189 +26,116 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             overflow-x: hidden;
-            /* 背景動態網格 */
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridMove 20s linear infinite;
+            /* 輕微的電視掃描線背景 */
+            background-image: repeating-linear-gradient(
+                0deg, transparent, transparent 1px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 3px
+            );
         }
-
-        @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
-
-        /* 滾動條樣式 */
-        ::-webkit-scrollbar { width: 8px; background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); }
 
         header {
-            padding: 30px; text-align: center;
-            background: rgba(0,0,0,0.8);
-            border-bottom: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-            position: relative; z-index: 2;
+            padding: 30px; text-align: center; border-bottom: 1px solid #333;
+            background: #000;
         }
         h1 {
-            font-family: 'Orbitron'; font-size: 3rem; color: #fff; margin: 0;
-            text-transform: uppercase; letter-spacing: 5px;
-            text-shadow: 2px 0 var(--neon-magenta), -2px 0 var(--neon-cyan);
+            font-family: 'Orbitron'; font-size: 2.5rem; color: #fff; margin: 0; letter-spacing: 3px;
         }
 
-        /* Grid System */
+        /* 書架 Grid */
         .grid-container {
             max-width: 1600px; margin: 0 auto; padding: 30px;
             display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 20px;
         }
-
         .book-card {
-            background: rgba(16, 32, 48, 0.8); border: 1px solid var(--border-color);
-            padding: 8px; cursor: pointer; transition: 0.3s;
-            position: relative; overflow: hidden;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            background: #1a1a1a; border: 1px solid #333; padding: 10px;
+            cursor: pointer; transition: 0.2s;
         }
-        .book-card:hover {
-            transform: translateY(-5px); 
-            border-color: var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.1);
-            box-shadow: 0 0 15px var(--neon-cyan);
-        }
+        .book-card:hover { transform: translateY(-5px); border-color: var(--neon-cyan); }
         .cover-wrapper { width: 100%; aspect-ratio: 3/4; overflow: hidden; margin-bottom: 8px; }
-        .book-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(60%); transition: 0.4s; }
+        .book-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%); transition: 0.3s; }
         .book-card:hover .book-img { filter: grayscale(0%); }
-        .book-title { font-family: 'Orbitron'; font-size: 0.85rem; color: #fff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .book-title { font-size: 0.9rem; color: #fff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .book-meta { font-size: 0.75rem; color: var(--neon-cyan); margin-top: 2px; display: flex; justify-content: space-between; }
 
         /* =========================================
-           GLITCH READER (CSS 核心)
+           CRT TV 閱讀器 (核心 CSS)
            ========================================= */
         .reader-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 10, 16, 0.98);
-            z-index: 9999;
+            background: #000; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
-            /* 掃描線紋理 */
-            background-image: repeating-linear-gradient(
-                0deg, transparent, transparent 2px, rgba(0, 243, 255, 0.05) 3px, rgba(0, 243, 255, 0.05) 3px
-            );
         }
         .reader-overlay.active { opacity: 1; pointer-events: auto; }
 
         .reader-stage {
             position: relative; width: 100%; height: 85vh;
             display: flex; justify-content: center; align-items: center;
+            overflow: hidden; /* 防止動畫超出邊界 */
         }
 
-        .img-container {
+        /* 圖片容器：這裡負責執行開關機動畫 */
+        .tv-screen {
             position: relative;
-            max-width: 90%; max-height: 100%;
+            max-width: 95%; max-height: 100%;
             display: flex; justify-content: center; align-items: center;
+            background: #000;
+            transform-origin: center center; /* 從中心縮放 */
         }
 
         .reader-img {
             max-width: 100%; max-height: 85vh;
-            border: 2px solid var(--border-color);
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
             display: block;
         }
 
-        /* --- Glitch Effects (故障特效) --- */
+        /* --- CRT Animation Keyframes --- */
         
-        /* 1. 圖片撕裂 */
-        .glitch-anim {
-            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-            filter: grayscale(100%) contrast(1.2);
-            position: relative;
-        }
-        
-        /* 2. RGB 分離 (紅/藍殘影) */
-        .glitch-anim::before, .glitch-anim::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: inherit; opacity: 0.5; mix-blend-mode: hard-light; pointer-events: none;
-        }
-        .glitch-anim::before {
-            background-image: inherit; /* 繼承圖片 */
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-            clip-path: inset(0 0 0 0); margin-left: -2px; color: var(--neon-magenta);
-        }
-        .glitch-anim::after {
-            background-image: inherit;
-            animation: glitch-anim-2 2s infinite linear alternate-reverse;
-            clip-path: inset(0 0 0 0); margin-left: 2px; color: var(--neon-cyan);
+        /* 關機動畫：壓扁 -> 變光點 -> 消失 */
+        @keyframes turn-off {
+            0% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
+            40% { transform: scale(1, 0.002); filter: brightness(3); opacity: 1; } /* 垂直壓扁成線，亮度暴增 */
+            70% { transform: scale(0.002, 0.002); filter: brightness(10); opacity: 1; } /* 水平壓扁成點 */
+            100% { transform: scale(0, 0); filter: brightness(0); opacity: 0; }
         }
 
-        /* 3. 傳輸中的噪點遮罩 */
-        .static-noise {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif'); /* 噪點 GIF */
-            opacity: 0; mix-blend-mode: screen; pointer-events: none;
-            background-size: cover;
-        }
-        .transmitting .static-noise { opacity: 0.15; }
-
-        @keyframes glitch-skew {
-            0% { transform: skew(0deg); }
-            20% { transform: skew(-10deg); filter: hue-rotate(90deg); }
-            40% { transform: skew(10deg); }
-            60% { transform: skew(-5deg); filter: invert(1); }
-            80% { transform: skew(5deg); }
-            100% { transform: skew(0deg); }
+        /* 開機動畫：光點 -> 拉成線 -> 展開 */
+        @keyframes turn-on {
+            0% { transform: scale(0.002, 0); filter: brightness(10); opacity: 0; }
+            30% { transform: scale(0.002, 0.002); filter: brightness(10); opacity: 1; } /* 出現光點 */
+            60% { transform: scale(1, 0.002); filter: brightness(3); opacity: 1; } /* 拉成橫線 */
+            100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
         }
 
-        /* 定義隨機切割的 Keyframes (看起來像訊號不良) */
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px,0); }
-            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px,0); }
-            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px,0); }
-            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px,0); }
-            80% { clip-path: inset(10% 0 70% 0); transform: translate(-2px,0); }
-            100% { clip-path: inset(30% 0 50% 0); transform: translate(2px,0); }
+        /* 應用動畫的 Classes */
+        .anim-off {
+            animation: turn-off 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px,0); }
-            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px,0); }
-            40% { clip-path: inset(30% 0 20% 0); transform: translate(2px,0); }
-            60% { clip-path: inset(10% 0 80% 0); transform: translate(-2px,0); }
-            80% { clip-path: inset(50% 0 30% 0); transform: translate(2px,0); }
-            100% { clip-path: inset(20% 0 60% 0); transform: translate(-2px,0); }
+        .anim-on {
+            animation: turn-on 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
         /* UI Controls */
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            width: 60px; height: 100px;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan); font-size: 2rem; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 100; clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
-            transition: 0.2s;
+            width: 50px; height: 80px;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid #555;
+            color: #fff; font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 100; transition: 0.2s;
         }
-        .nav-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
+        .nav-btn:hover { background: #fff; color: #000; }
         .prev-btn { left: 20px; } .next-btn { right: 20px; }
 
         .close-btn {
             position: absolute; top: 20px; right: 20px;
-            color: #ff3333; font-family: 'Orbitron'; border: 1px solid #ff3333;
-            padding: 5px 15px; cursor: pointer; letter-spacing: 2px; transition: 0.3s;
+            color: #fff; border: 1px solid #fff; padding: 5px 15px; cursor: pointer;
+            font-family: 'Orbitron'; font-size: 0.9rem; transition: 0.3s;
         }
-        .close-btn:hover { background: #ff3333; color: #000; }
+        .close-btn:hover { background: #fff; color: #000; }
 
-        /* 數據顯示區 */
-        .hud-bottom {
-            position: absolute; bottom: 30px; width: 100%; text-align: center;
-        }
         .page-counter {
-            font-family: 'Orbitron'; font-size: 1.5rem; color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-cyan);
-        }
-        .loading-bar {
-            width: 300px; height: 4px; background: #333; margin: 10px auto;
-            position: relative; overflow: hidden;
-        }
-        .loading-progress {
-            height: 100%; background: var(--neon-cyan); width: 0%;
-            box-shadow: 0 0 10px var(--neon-cyan); transition: width 0.3s;
+            position: absolute; bottom: 20px; width: 100%; text-align: center;
+            font-family: 'Orbitron'; color: #666; font-size: 1rem;
         }
 
     </style>
@@ -216,29 +144,24 @@
 
 <header>
     <h1>楊修之死 - AI文言故事漫畫創作</h1>
-    <div style="font-size: 0.8rem; color: var(--neon-cyan); letter-spacing: 2px;">SECURE CONNECTION ESTABLISHED</div>
 </header>
 
 <div class="grid-container" id="bookGrid"></div>
 
 <div class="reader-overlay" id="readerOverlay">
-    <div class="close-btn" onclick="closeBook()">[ DISCONNECT ]</div>
+    <div class="close-btn" onclick="closeBook()">POWER OFF</div>
     
     <div class="reader-stage">
         <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
         
-        <div class="img-container" id="imgContainer">
+        <div class="tv-screen" id="tvScreen">
             <img src="" class="reader-img" id="readerImg">
-            <div class="static-noise"></div>
         </div>
         
         <div class="nav-btn next-btn" onclick="changePage(1)">❯</div>
     </div>
 
-    <div class="hud-bottom">
-        <div class="page-counter" id="pageCounter">00 / 00</div>
-        <div class="loading-bar"><div class="loading-progress" id="progressBar"></div></div>
-    </div>
+    <div class="page-counter" id="pageCounter">00 / 00</div>
 </div>
 
 <script>
@@ -249,8 +172,8 @@
     const bookData = [
         { folder: '2B第1組', title: '2B第1組', count: 13 },
         { folder: '2B第2組', title: '2B第2組', count: 12 },
-        { folder: 'gp3', title: 'MISSION: GAMMA', count: 8 },
-        // 增加更多...
+        { folder: 'gp3', title: 'EPISODE 03', count: 8 },
+        // ...
     ];
 
     // ==========================================
@@ -264,36 +187,30 @@
         for (let i = 1; i <= item.count; i++) pages.push(`${rootFolder}/${item.folder}/${i}.png`);
         
         const idStr = (idx + 1).toString().padStart(3, '0');
-
         const card = document.createElement('div');
         card.className = 'book-card';
         card.onclick = () => openBook(pages);
         card.innerHTML = `
-            <div class="cover-wrapper">
-                <img src="${coverPath}" class="book-img" loading="lazy" onerror="this.src='${pages[0] || ''}'">
-            </div>
-            <div style="padding: 5px;">
+            <div class="cover-wrapper"><img src="${coverPath}" class="book-img" loading="lazy" onerror="this.src='${pages[0] || ''}'"></div>
+            <div style="padding:5px;">
                 <h3 class="book-title">${item.title}</h3>
-                <div style="display:flex; justify-content:space-between; color:var(--neon-cyan); font-size:0.7rem;">
-                    <span>ID: ${idStr}</span>
-                    <span>DAT: ${item.count}MB</span>
-                </div>
+                <div class="book-meta"><span>ID:${idStr}</span><span>${item.count}P</span></div>
             </div>
         `;
         grid.appendChild(card);
     });
 
     // ==========================================
-    // 3. Glitch Reader 邏輯 (完全無需 Canvas)
+    // 3. CRT TV Reader Logic
     // ==========================================
     let currentPages = [];
     let currentIndex = 0;
+    let isTransitioning = false; // 防止狂按
     
     const overlay = document.getElementById('readerOverlay');
     const readerImg = document.getElementById('readerImg');
-    const imgContainer = document.getElementById('imgContainer');
+    const tvScreen = document.getElementById('tvScreen'); // 動畫作用對象
     const pageCounter = document.getElementById('pageCounter');
-    const progressBar = document.getElementById('progressBar');
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
 
@@ -303,73 +220,68 @@
         currentIndex = 0;
         overlay.classList.add('active');
         
-        loadPage(currentIndex, true); // true 代表是第一次打開
+        // 第一次打開，直接執行開機動畫
+        loadPage(currentIndex, true);
     }
 
     function closeBook() {
-        overlay.classList.remove('active');
-        setTimeout(() => { readerImg.src = ''; }, 300);
+        // 執行關機動畫後再隱藏 Overlay
+        tvScreen.classList.remove('anim-on');
+        tvScreen.classList.add('anim-off');
+        
+        setTimeout(() => {
+            overlay.classList.remove('active');
+            tvScreen.classList.remove('anim-off');
+            readerImg.src = '';
+        }, 400); // 等待動畫結束
     }
 
     function changePage(dir) {
+        if (isTransitioning) return; // 鎖定直到動畫結束
+        
         const nextIndex = currentIndex + dir;
         if (nextIndex >= 0 && nextIndex < currentPages.length) {
-            loadPage(nextIndex);
+            isTransitioning = true;
+            
+            // 1. 先「關電視」(畫面縮小消失)
+            tvScreen.classList.remove('anim-on');
+            tvScreen.classList.add('anim-off');
+
+            // 2. 等待關機動畫完成 (400ms)
+            setTimeout(() => {
+                currentIndex = nextIndex;
+                const tempImg = new Image();
+                tempImg.src = currentPages[index = currentIndex];
+                
+                tempImg.onload = () => {
+                    readerImg.src = tempImg.src;
+                    updateUI();
+
+                    // 3. 換好圖後，「開電視」(畫面展開)
+                    tvScreen.classList.remove('anim-off');
+                    tvScreen.classList.add('anim-on');
+
+                    // 4. 動畫結束後解鎖
+                    setTimeout(() => {
+                        isTransitioning = false;
+                    }, 500); // 開機動畫時間
+                };
+            }, 400); // 關機動畫時間
         }
     }
 
-    function loadPage(index, isFirst = false) {
-        // 1. 觸發故障特效 (Glitch Start)
-        // 只有在切換頁面時才觸發強烈故障，如果是第一次打開則稍微輕微一點
-        imgContainer.classList.add('transmitting');
-        readerImg.classList.add('glitch-anim');
-
-        // 模擬數據傳輸延遲 (300ms)
-        setTimeout(() => {
-            currentIndex = index;
-            
-            // 2. 載入新圖片
-            const tempImg = new Image();
-            tempImg.src = currentPages[index];
-            
-            tempImg.onload = () => {
-                readerImg.src = tempImg.src;
-                
-                // 3. 圖片載入後，移除故障效果 (Glitch End)
-                // 再多留一點時間讓 Glitch 跑一下
-                setTimeout(() => {
-                    readerImg.classList.remove('glitch-anim');
-                    imgContainer.classList.remove('transmitting');
-                }, 400);
-
-                updateHUD();
-            };
-        }, 300);
+    // 只負責第一次載入，不需要關機步驟
+    function loadPage(index) {
+        currentIndex = index;
+        readerImg.src = currentPages[index];
+        updateUI();
+        
+        tvScreen.classList.remove('anim-off');
+        tvScreen.classList.add('anim-on');
     }
 
-    // 更新 HUD 和 "黑客解碼" 文字特效
-    function updateHUD() {
-        const targetStr = `${(currentIndex + 1).toString().padStart(2, '0')} / ${currentPages.length.toString().padStart(2, '0')}`;
-        
-        // 文字亂碼解碼效果
-        let iter = 0;
-        const interval = setInterval(() => {
-            pageCounter.innerText = targetStr
-                .split("")
-                .map((letter, index) => {
-                    if(index < iter) return letter; // 已經解碼的部分
-                    return "01"[Math.floor(Math.random() * 2)]; // 還沒解碼的部分顯示 0 或 1
-                })
-                .join("");
-            
-            if(iter >= targetStr.length) clearInterval(interval);
-            iter += 1/2; // 控制解碼速度
-        }, 30);
-
-        // 更新進度條
-        const percentage = ((currentIndex + 1) / currentPages.length) * 100;
-        progressBar.style.width = `${percentage}%`;
-
+    function updateUI() {
+        pageCounter.innerText = `${(currentIndex + 1).toString().padStart(2, '0')} / ${currentPages.length.toString().padStart(2, '0')}`;
         prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
         nextBtn.style.visibility = currentIndex === currentPages.length - 1 ? 'hidden' : 'visible';
     }
