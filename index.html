@@ -3,319 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>楊修必須死</title>
+    <title>2B Digital Library</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           1. 中國風全局設定 (CSS 保持不變)
+           CSS: 2024 玻璃擬態 & 流動漸層風格
            ========================================= */
         :root {
-            --wood-dark: #3e2723;
-            --wood-light: #5d4037;
-            --paper-bg: #fdf5e6;
-            --gold: #ffecb3;
+            --primary-bg: #0f172a;
+            --card-glass: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-sec: #94a3b8;
+            --accent-gradient: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
         }
 
         body {
-            background-color: var(--paper-bg);
-            /* 宣紙紋理 */
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d7ccc8' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
-            font-family: 'Noto Serif TC', serif;
-            margin: 0;
-            padding: 0;
-            color: var(--wood-dark);
+            margin: 0; padding: 0;
+            font-family: 'Poppins', 'Noto Sans TC', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
             min-height: 100vh;
+            overflow-x: hidden;
+            
+            /* 極光流動背景動畫 */
+            background: linear-gradient(-45deg, #020617, #1e1b4b, #312e81, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* 標題區 */
-        header { text-align: center; padding: 60px 20px 40px; }
-        .plaque {
-            display: inline-block;
-            background: var(--wood-dark);
-            padding: 15px 50px;
-            border-radius: 8px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border: 4px solid #8d6e63;
+        header {
+            padding: 80px 20px 40px;
+            text-align: center;
         }
+
         h1 {
-            font-family: 'Ma Shan Zheng', cursive;
             font-size: 3.5rem;
+            font-weight: 800;
             margin: 0;
-            color: var(--gold);
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
-            letter-spacing: 5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3));
         }
-        .subtitle { margin-top: 20px; font-size: 1.1rem; color: #5d4037; font-weight: bold; }
 
-        /* 書架 Grid */
-        .shelf-container {
-            max-width: 1200px; margin: 0 auto; padding: 40px;
-            background: #4e342e; border-radius: 4px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.6), 0 20px 50px rgba(0,0,0,0.3);
-            border: 8px solid #3e2723;
+        .subtitle {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: var(--text-sec);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Grid 佈局 */
+        .grid-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 40px;
+            perspective: 1000px;
         }
 
-        .shelf-cell {
-            background-color: #3e2723;
-            border: 6px solid #6d4c41;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
-            padding: 25px 20px 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            position: relative; height: 340px; cursor: pointer;
-            transition: all 0.3s ease;
+        /* 玻璃卡片設計 */
+        .book-card {
+            position: relative;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 15px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-        .shelf-cell:hover { background-color: #4a2f2a; box-shadow: inset 0 0 25px rgba(0,0,0,0.5); }
 
-        /* 線裝書裝飾 */
-        .book-wrapper { position: relative; width: 100%; max-width: 180px; transition: transform 0.3s; }
-        .book-spine-deco {
-            position: absolute; top: 2px; left: 0; bottom: 2px; width: 25px;
-            background-color: #2c3e50; z-index: 2;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; justify-content: space-evenly; align-items: center;
+        .book-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(129, 140, 248, 0.25); /* 霓虹發光 */
+            border-color: rgba(255, 255, 255, 0.4);
+            z-index: 10;
         }
-        .stitch { width: 70%; height: 2px; background-color: rgba(255,255,255,0.7); box-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+
+        .cover-wrapper {
+            width: 100%;
+            aspect-ratio: 3/4;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.2);
+            position: relative;
+        }
+
         .book-img {
-            display: block; width: 100%; height: 240px; object-fit: cover;
-            padding-left: 25px; box-sizing: border-box; background: #fff;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.4); filter: sepia(0.2); transition: filter 0.3s;
-        }
-        .shelf-cell:hover .book-wrapper { transform: scale(1.05); }
-        .shelf-cell:hover .book-img { filter: sepia(0); }
-
-        .book-tag {
-            margin-top: 15px; background: #fdf5e6; color: #3e2723; padding: 5px 12px;
-            font-size: 1rem; border-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            font-family: 'Noto Serif TC', serif; letter-spacing: 1px; border: 1px solid #d7ccc8; font-weight: 700;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
         }
 
-        /* 閱讀器樣式 */
-        .animating-cover { position: fixed; z-index: 9999; pointer-events: none; box-shadow: 0 0 50px rgba(0,0,0,0.8); transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+        .book-card:hover .book-img {
+            transform: scale(1.1);
+        }
+
+        /* 裝飾光效 */
+        .glow-deco {
+            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0; transform: rotate(45deg); transition: opacity 0.4s; pointer-events: none;
+        }
+        .book-card:hover .glow-deco { opacity: 1; }
+
+        .card-info { padding: 20px 10px 10px; text-align: center; }
+        .book-title {
+            font-size: 1.3rem; margin: 0; color: #fff; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .book-meta { font-size: 0.9rem; color: var(--text-sec); margin-top: 5px; }
+
+        /* 閱讀器介面 (全螢幕遮罩) */
         .reader-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(30, 20, 15, 0.95); z-index: 1000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.4s ease;
         }
         .reader-overlay.active { opacity: 1; pointer-events: auto; }
-        .reader-stage { position: relative; display: flex; align-items: center; }
-        .reader-img { max-height: 85vh; max-width: 90vw; box-shadow: 0 0 30px rgba(0,0,0,0.8); border: 2px solid #5d4037; opacity: 0; transition: opacity 0.5s ease; }
-        .nav-btn {
-            position: fixed; top: 50%; width: 60px; height: 60px; border-radius: 50%;
-            background: rgba(255,255,255,0.1); color: #fff; display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem; cursor: pointer; transition: 0.3s; border: 1px solid #8d6e63;
-        }
-        .nav-btn:hover { background: #8d6e63; }
-        .prev-btn { left: 30px; }
-        .next-btn { right: 30px; }
-        .close-btn { position: absolute; top: 30px; right: 30px; color: #d7ccc8; font-size: 2rem; cursor: pointer; transition: 0.3s; }
-        .close-btn:hover { color: #fff; transform: rotate(90deg); }
-        .page-indicator { position: absolute; bottom: 20px; color: #a1887f; font-family: 'Noto Serif TC', serif; letter-spacing: 2px; }
 
-        @media (max-width: 768px) {
-            .shelf-container { padding: 15px; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .shelf-cell { height: 260px; padding: 10px; }
-            .book-wrapper { max-width: 100%; }
-            .book-img { height: 180px; }
-            h1 { font-size: 2rem; }
-            .nav-btn { width: 40px; height: 40px; }
+        .reader-stage {
+            position: relative; width: 100%; height: 80vh;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .reader-img {
+            max-width: 90%; max-height: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.6);
+            opacity: 0; transform: scale(0.95);
+            transition: all 0.4s ease;
+        }
+        .reader-img.loaded { opacity: 1; transform: scale(1); }
+
+        /* 按鈕樣式 */
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 60px; height: 60px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 1.5rem; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: 0.3s; z-index: 10; backdrop-filter: blur(5px);
+        }
+        .nav-btn:hover { background: white; color: #0f172a; box-shadow: 0 0 20px rgba(255,255,255,0.5); }
+        .prev-btn { left: 40px; }
+        .next-btn { right: 40px; }
+
+        .close-btn {
+            position: absolute; top: 30px; right: 30px;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,0,0,0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
+        }
+        .close-btn:hover { background: #ef4444; color: white; transform: rotate(90deg); }
+
+        /* 進度條 */
+        .progress-container {
+            position: absolute; bottom: 40px; width: 100%;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+        }
+        .progress-bar-bg { width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .progress-bar {
+            height: 100%; background: var(--accent-gradient); width: 0%; transition: width 0.3s;
+        }
+        .page-info { font-size: 0.9rem; color: var(--text-sec); letter-spacing: 1px; }
+
+        @media(max-width: 768px) {
+            .grid-container { grid-template-columns: repeat(2, 1fr); padding: 20px; gap: 20px; }
+            h1 { font-size: 2.5rem; }
+            .nav-btn { width: 45px; height: 45px; font-size: 1.2rem; }
+            .prev-btn { left: 10px; } .next-btn { right: 10px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="plaque">
-        <h1>楊修必須死</h1>
-    </div>
-    <div class="subtitle">AI文言故事漫畫創作</div>
+    <h1>Class 2B</h1>
+    <div class="subtitle">Digital Library Archive</div>
 </header>
 
-<div class="shelf-container" id="shelfContainer">
-    </div>
+<div class="grid-container" id="bookGrid"></div>
 
 <div class="reader-overlay" id="readerOverlay">
     <div class="close-btn" onclick="closeBook()">✕</div>
-    <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
+    
     <div class="reader-stage">
+        <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
         <img src="" class="reader-img" id="readerImg">
+        <div class="nav-btn next-btn" onclick="changePage(1)">❯</div>
     </div>
-    <div class="nav-btn next-btn" onclick="changePage(1)">❯</div>
-    <div class="page-indicator" id="pageIndicator"></div>
+
+    <div class="progress-container">
+        <div class="page-info" id="pageInfo"></div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
 </div>
 
 <script>
     // ==========================================
-    // 1. 設定區域 (Configuration)
-    // 請在這裡修改你的資料夾名稱與頁數
+    // 1. 設定區域 (與您習慣的 Logic 相同)
     // ==========================================
     
-    const rootFolder = '2B'; // 你的主資料夾名稱
+    // 主資料夾名稱
+    const rootFolder = '2B'; 
 
+    // 書籍資料：只需要設定 [資料夾名稱] 與 [頁數]
+    // Script 會自動算出路徑： 2B/gp1/1.png, 2B/gp1/2.png ...
     const bookData = [
-        // 格式: { folder: '資料夾名稱', count: 該資料夾內有多少張內頁(不含封面的數量) }
-        { folder: '2B第1組', count: 13 }, 
-        { folder: '2B第2組', count: 12 },
-        { folder: 'gp3', count: 12 },
-        // 請根據實際情況增加...
+        { folder: '2B第1組', title: '2B第1組', count: 13 }, // title 是顯示在畫面上的書名
+        { folder: '2B第1組', title: '2B第2組', count: 12 },
+        { folder: 'gp3', title: 'Group 3', count: 8 },
+        // 在這裡複製貼上增加新書...
     ];
 
     // ==========================================
-    // 2. 系統邏輯 (System Logic)
+    // 2. 自動產生書架系統
     // ==========================================
+    const grid = document.getElementById('bookGrid');
 
+    // 將簡易設定轉換為完整路徑資料
+    bookData.forEach(item => {
+        // 1. 產生封面路徑
+        const coverPath = `${rootFolder}/${item.folder}/b.png`;
+        
+        // 2. 產生內頁路徑陣列
+        const pages = [];
+        for (let i = 1; i <= item.count; i++) {
+            pages.push(`${rootFolder}/${item.folder}/${i}.png`);
+        }
+
+        // 3. 建立 HTML 卡片
+        const card = document.createElement('div');
+        card.className = 'book-card';
+        // 點擊時傳送內頁資料給閱讀器
+        card.onclick = () => openBook(pages);
+        
+        card.innerHTML = `
+            <div class="glow-deco"></div>
+            <div class="cover-wrapper">
+                <img src="${coverPath}" class="book-img" loading="lazy" alt="${item.title}" onerror="this.src='${pages[0] || ''}'">
+            </div>
+            <div class="card-info">
+                <h3 class="book-title">${item.title}</h3>
+                <div class="book-meta">${item.count} Pages</div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    // ==========================================
+    // 3. 閱讀器邏輯 (Modern Reader)
+    // ==========================================
     let currentPages = [];
     let currentIndex = 0;
-    const container = document.getElementById('shelfContainer');
+    
     const overlay = document.getElementById('readerOverlay');
     const readerImg = document.getElementById('readerImg');
-    const pageIndicator = document.getElementById('pageIndicator');
+    const pageInfo = document.getElementById('pageInfo');
+    const progressBar = document.getElementById('progressBar');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
 
-    // 初始化：產生書架
-    function initShelf() {
-        container.innerHTML = ''; // 清空
-
-        bookData.forEach(book => {
-            // 1. 產生封面路徑
-            const coverSrc = `${rootFolder}/${book.folder}/b.png`;
-            
-            // 2. 產生內頁陣列 [1.png, 2.png, ..., count.png]
-            const pages = [];
-            for (let i = 1; i <= book.count; i++) {
-                pages.push(`${rootFolder}/${book.folder}/${i}.png`);
-            }
-
-            // 3. 建立 HTML 元素
-            const cell = document.createElement('div');
-            cell.className = 'shelf-cell';
-            
-            // 點擊事件
-            cell.onclick = function() {
-                openBook(this, coverSrc, pages);
-            };
-
-            const htmlContent = `
-                <div class="book-wrapper">
-                    <div class="book-spine-deco">
-                        <div class="stitch"></div>
-                        <div class="stitch"></div>
-                        <div class="stitch"></div>
-                        <div class="stitch"></div>
-                    </div>
-                    <img src="${coverSrc}" class="book-img" alt="Cover" onerror="this.src='${pages[0] || ''}'">
-                </div>
-                <div class="book-tag">${book.folder}</div>
-            `;
-            
-            cell.innerHTML = htmlContent;
-            container.appendChild(cell);
-        });
-    }
-
-    // 執行初始化
-    initShelf();
-
-
-    // ==========================================
-    // 3. 閱讀器功能 (Reader Functions)
-    // ==========================================
-
-    function openBook(element, coverSrc, pages) {
-        if(pages.length === 0) return;
-
+    function openBook(pages) {
+        if (!pages || pages.length === 0) return;
         currentPages = pages;
-        currentIndex = 0; // Zoom 進去後直接是第 1 頁
-
-        const imgEl = element.querySelector('.book-img');
-        const rect = imgEl.getBoundingClientRect();
-
-        // 1. 創造替身
-        const clone = document.createElement('img');
-        clone.src = coverSrc;
-        clone.className = 'animating-cover';
+        currentIndex = 0;
         
-        clone.style.top = rect.top + 'px';
-        clone.style.left = rect.left + 'px';
-        clone.style.width = rect.width + 'px';
-        clone.style.height = rect.height + 'px';
-        
-        document.body.appendChild(clone);
-        
-        // 2. 計算目標位置
-        const targetH = window.innerHeight * 0.85;
-        const ratio = rect.width / rect.height;
-        const targetW = targetH * ratio;
-        
-        const targetTop = (window.innerHeight - targetH) / 2;
-        const targetLeft = (window.innerWidth - targetW) / 2;
-
-        requestAnimationFrame(() => {
-            clone.style.top = targetTop + 'px';
-            clone.style.left = targetLeft + 'px';
-            clone.style.width = targetW + 'px';
-            clone.style.height = targetH + 'px';
-        });
-
         overlay.classList.add('active');
-
-        // 3. 載入第 1 頁並移除替身
-        setTimeout(() => {
-            const firstPageSrc = currentPages[0];
-            const tempImg = new Image();
-            tempImg.src = firstPageSrc;
-            
-            tempImg.onload = () => {
-                readerImg.src = firstPageSrc;
-                readerImg.style.opacity = 1;
-                clone.style.opacity = 0; 
-                setTimeout(() => { if(clone.parentNode) clone.parentNode.removeChild(clone); }, 300);
-            };
-            updateControls();
-        }, 600);
+        loadPage(currentIndex);
     }
 
     function closeBook() {
         overlay.classList.remove('active');
-        readerImg.style.opacity = 0;
-        setTimeout(() => { readerImg.src = ''; }, 400);
+        setTimeout(() => { 
+            readerImg.src = ''; 
+            readerImg.classList.remove('loaded');
+        }, 300);
     }
 
     function changePage(dir) {
         const nextIndex = currentIndex + dir;
-        if(nextIndex >= 0 && nextIndex < currentPages.length) {
-            readerImg.style.opacity = 0;
-            setTimeout(() => {
-                currentIndex = nextIndex;
-                readerImg.src = currentPages[currentIndex];
-                readerImg.onload = () => { readerImg.style.opacity = 1; };
-                updateControls();
-            }, 300);
+        if (nextIndex >= 0 && nextIndex < currentPages.length) {
+            loadPage(nextIndex);
         }
     }
 
+    function loadPage(index) {
+        currentIndex = index;
+        
+        // 切換效果：先稍微淡出
+        readerImg.classList.remove('loaded');
+        
+        const tempImg = new Image();
+        tempImg.src = currentPages[index];
+        
+        tempImg.onload = () => {
+            readerImg.src = currentPages[index];
+            readerImg.classList.add('loaded'); // 載入完畢後淡入
+            updateControls();
+        };
+    }
+
     function updateControls() {
-        pageIndicator.innerText = `${currentIndex + 1} / ${currentPages.length}`;
-        document.querySelector('.prev-btn').style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-        document.querySelector('.next-btn').style.visibility = currentIndex === currentPages.length - 1 ? 'hidden' : 'visible';
+        // 更新文字
+        pageInfo.innerText = `${currentIndex + 1} / ${currentPages.length}`;
+        
+        // 更新進度條寬度
+        const percentage = ((currentIndex + 1) / currentPages.length) * 100;
+        progressBar.style.width = `${percentage}%`;
+
+        // 按鈕顯示控制
+        prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+        nextBtn.style.visibility = currentIndex === currentPages.length - 1 ? 'hidden' : 'visible';
     }
 
     // 鍵盤控制
     document.addEventListener('keydown', (e) => {
-        if(!overlay.classList.contains('active')) return;
-        if(e.key === 'ArrowLeft') changePage(-1);
-        if(e.key === 'ArrowRight') changePage(1);
-        if(e.key === 'Escape') closeBook();
+        if (!overlay.classList.contains('active')) return;
+        if (e.key === 'ArrowLeft') changePage(-1);
+        if (e.key === 'ArrowRight') changePage(1);
+        if (e.key === 'Escape') closeBook();
     });
+
 </script>
 
 </body>
-
 </html>
-
-
-
