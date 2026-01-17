@@ -10,206 +10,204 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
-        /* =========================================
-           CSS: Cyberpunk / Sci-Fi HUD 風格
-           ========================================= */
         :root {
             --bg-dark: #050a10;
             --neon-cyan: #00f3ff;
-            --neon-pink: #bc13fe;
-            --glass-panel: rgba(0, 243, 255, 0.05);
+            --neon-magenta: #ff00ff;
+            --grid-color: rgba(0, 243, 255, 0.1);
             --border-color: rgba(0, 243, 255, 0.3);
             --text-main: #e0f7fa;
         }
 
         body {
             margin: 0; padding: 0;
-            font-family: 'Share Tech Mono', monospace; /* 數據感字體 */
+            font-family: 'Share Tech Mono', monospace;
             background-color: var(--bg-dark);
             color: var(--text-main);
-            min-height: 100vh;
             overflow-x: hidden;
-            
-            /* 科技網格背景 */
+            /* 背景動態網格 */
             background-image: 
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
         }
 
-        /* 標題區：HUD 介面感 */
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* 滾動條樣式 */
+        ::-webkit-scrollbar { width: 8px; background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); }
+
         header {
-            padding: 40px 20px 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            position: relative;
-        }
-        
-        /* 掃描線動畫 */
-        header::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
-            background: var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan);
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-            margin: 0;
-            color: #fff;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-
-        .sys-status {
-            font-size: 0.9rem; color: var(--neon-cyan); margin-top: 5px;
-            letter-spacing: 2px; opacity: 0.8;
-        }
-        .blink { animation: blinker 1.5s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
-
-        /* =========================================
-           Grid 設定：更密集，縮小尺寸
-           ========================================= */
-        .grid-container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 30px;
-            display: grid;
-            /* 這裡控制大小：minmax(160px) 讓書本變小，每行塞更多 */
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px; 
-        }
-
-        /* =========================================
-           卡片設計：資料晶片 (Data Chip) 風格
-           ========================================= */
-        .book-card {
-            position: relative;
-            background: rgba(10, 20, 30, 0.6);
-            border: 1px solid var(--border-color);
-            padding: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            
-            /* 切角效果 (Clip-path) */
-            clip-path: polygon(
-                0 0, 
-                100% 0, 
-                100% calc(100% - 15px), 
-                calc(100% - 15px) 100%, 
-                0 100%
-            );
-        }
-
-        /* 裝飾角落 */
-        .book-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--border-color); transition: 0.3s;
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            background: rgba(0, 243, 255, 0.1);
-            border-color: var(--neon-cyan);
+            padding: 30px; text-align: center;
+            background: rgba(0,0,0,0.8);
+            border-bottom: 2px solid var(--neon-cyan);
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+            position: relative; z-index: 2;
         }
-        
-        .book-card:hover::before { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+        h1 {
+            font-family: 'Orbitron'; font-size: 3rem; color: #fff; margin: 0;
+            text-transform: uppercase; letter-spacing: 5px;
+            text-shadow: 2px 0 var(--neon-magenta), -2px 0 var(--neon-cyan);
+        }
 
-        .cover-wrapper {
-            width: 100%;
-            aspect-ratio: 3/4;
-            overflow: hidden;
-            margin-bottom: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
+        /* Grid System */
+        .grid-container {
+            max-width: 1600px; margin: 0 auto; padding: 30px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
         }
-        
-        /* 圖片覆蓋一層科技藍色濾鏡，hover 時還原 */
-        .book-img {
-            width: 100%; height: 100%; object-fit: cover;
-            filter: grayscale(40%) contrast(1.1);
-            transition: 0.4s;
-        }
-        .book-card:hover .book-img { filter: grayscale(0%) contrast(1); }
 
-        .card-info { text-align: left; padding-left: 8px; }
-        
-        .book-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem; font-weight: 700; color: #fff;
-            margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .book-card {
+            background: rgba(16, 32, 48, 0.8); border: 1px solid var(--border-color);
+            padding: 8px; cursor: pointer; transition: 0.3s;
+            position: relative; overflow: hidden;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
-        .book-meta {
-            font-size: 0.75rem; color: var(--neon-cyan); margin-top: 2px;
-            display: flex; justify-content: space-between;
+        .book-card:hover {
+            transform: translateY(-5px); 
+            border-color: var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 15px var(--neon-cyan);
         }
+        .cover-wrapper { width: 100%; aspect-ratio: 3/4; overflow: hidden; margin-bottom: 8px; }
+        .book-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(60%); transition: 0.4s; }
+        .book-card:hover .book-img { filter: grayscale(0%); }
+        .book-title { font-family: 'Orbitron'; font-size: 0.85rem; color: #fff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* =========================================
-           閱讀器：戰術介面 (Tactical View)
+           GLITCH READER (CSS 核心)
            ========================================= */
         .reader-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 10, 16, 0.95);
-            backdrop-filter: blur(10px); z-index: 1000;
+            background: rgba(5, 10, 16, 0.98);
+            z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: 0.3s;
-            
-            /* 閱讀器背景網格 */
-            background-image: radial-gradient(circle, transparent 20%, #000 120%);
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            /* 掃描線紋理 */
+            background-image: repeating-linear-gradient(
+                0deg, transparent, transparent 2px, rgba(0, 243, 255, 0.05) 3px, rgba(0, 243, 255, 0.05) 3px
+            );
         }
         .reader-overlay.active { opacity: 1; pointer-events: auto; }
 
         .reader-stage {
             position: relative; width: 100%; height: 85vh;
             display: flex; justify-content: center; align-items: center;
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
+        }
+
+        .img-container {
+            position: relative;
+            max-width: 90%; max-height: 100%;
+            display: flex; justify-content: center; align-items: center;
         }
 
         .reader-img {
-            max-width: 95%; max-height: 100%;
-            border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+            max-width: 100%; max-height: 85vh;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            display: block;
         }
 
-        /* 科技感按鈕 */
+        /* --- Glitch Effects (故障特效) --- */
+        
+        /* 1. 圖片撕裂 */
+        .glitch-anim {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+            filter: grayscale(100%) contrast(1.2);
+            position: relative;
+        }
+        
+        /* 2. RGB 分離 (紅/藍殘影) */
+        .glitch-anim::before, .glitch-anim::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: inherit; opacity: 0.5; mix-blend-mode: hard-light; pointer-events: none;
+        }
+        .glitch-anim::before {
+            background-image: inherit; /* 繼承圖片 */
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+            clip-path: inset(0 0 0 0); margin-left: -2px; color: var(--neon-magenta);
+        }
+        .glitch-anim::after {
+            background-image: inherit;
+            animation: glitch-anim-2 2s infinite linear alternate-reverse;
+            clip-path: inset(0 0 0 0); margin-left: 2px; color: var(--neon-cyan);
+        }
+
+        /* 3. 傳輸中的噪點遮罩 */
+        .static-noise {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif'); /* 噪點 GIF */
+            opacity: 0; mix-blend-mode: screen; pointer-events: none;
+            background-size: cover;
+        }
+        .transmitting .static-noise { opacity: 0.15; }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(-10deg); filter: hue-rotate(90deg); }
+            40% { transform: skew(10deg); }
+            60% { transform: skew(-5deg); filter: invert(1); }
+            80% { transform: skew(5deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        /* 定義隨機切割的 Keyframes (看起來像訊號不良) */
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px,0); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px,0); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px,0); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px,0); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(-2px,0); }
+            100% { clip-path: inset(30% 0 50% 0); transform: translate(2px,0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px,0); }
+            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px,0); }
+            40% { clip-path: inset(30% 0 20% 0); transform: translate(2px,0); }
+            60% { clip-path: inset(10% 0 80% 0); transform: translate(-2px,0); }
+            80% { clip-path: inset(50% 0 30% 0); transform: translate(2px,0); }
+            100% { clip-path: inset(20% 0 60% 0); transform: translate(-2px,0); }
+        }
+
+        /* UI Controls */
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%);
-            width: 50px; height: 80px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            font-size: 1.5rem; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; z-index: 10; transition: 0.2s;
-            clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%); /* 多邊形按鈕 */
+            width: 60px; height: 100px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan); font-size: 2rem; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 100; clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
+            transition: 0.2s;
         }
-        .nav-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+        .nav-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
         .prev-btn { left: 20px; } .next-btn { right: 20px; }
 
         .close-btn {
             position: absolute; top: 20px; right: 20px;
-            font-family: 'Orbitron'; color: #ff3333; font-size: 1.2rem; cursor: pointer;
-            border: 1px solid #ff3333; padding: 5px 15px;
-            text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.3s;
+            color: #ff3333; font-family: 'Orbitron'; border: 1px solid #ff3333;
+            padding: 5px 15px; cursor: pointer; letter-spacing: 2px; transition: 0.3s;
         }
-        .close-btn:hover { background: #ff3333; color: #000; box-shadow: 0 0 15px #ff3333; }
+        .close-btn:hover { background: #ff3333; color: #000; }
 
-        .progress-bar-container {
-            position: absolute; bottom: 0; width: 100%; height: 4px; background: #111;
+        /* 數據顯示區 */
+        .hud-bottom {
+            position: absolute; bottom: 30px; width: 100%; text-align: center;
         }
-        .progress-bar {
+        .page-counter {
+            font-family: 'Orbitron'; font-size: 1.5rem; color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .loading-bar {
+            width: 300px; height: 4px; background: #333; margin: 10px auto;
+            position: relative; overflow: hidden;
+        }
+        .loading-progress {
             height: 100%; background: var(--neon-cyan); width: 0%;
-            box-shadow: 0 0 10px var(--neon-cyan); transition: width 0.2s;
-        }
-        .page-data {
-            position: absolute; bottom: 20px; right: 30px;
-            font-family: 'Orbitron'; color: var(--neon-cyan); font-size: 1.2rem;
+            box-shadow: 0 0 10px var(--neon-cyan); transition: width 0.3s;
         }
 
     </style>
@@ -217,43 +215,42 @@
 <body>
 
 <header>
-    <h1>2B ARCHIVE</h1>
-    <div class="sys-status">SYSTEM STATUS: <span class="blink" style="color:#0f0;">ONLINE</span> // ACCESS GRANTED</div>
+    <h1>楊修之死 - AI文言故事漫畫創作</h1>
+    <div style="font-size: 0.8rem; color: var(--neon-cyan); letter-spacing: 2px;">SECURE CONNECTION ESTABLISHED</div>
 </header>
 
 <div class="grid-container" id="bookGrid"></div>
 
 <div class="reader-overlay" id="readerOverlay">
-    <div class="close-btn" onclick="closeBook()">[ TERMINATE ]</div>
+    <div class="close-btn" onclick="closeBook()">[ DISCONNECT ]</div>
     
     <div class="reader-stage">
         <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
-        <img src="" class="reader-img" id="readerImg">
+        
+        <div class="img-container" id="imgContainer">
+            <img src="" class="reader-img" id="readerImg">
+            <div class="static-noise"></div>
+        </div>
+        
         <div class="nav-btn next-btn" onclick="changePage(1)">❯</div>
     </div>
 
-    <div class="page-data" id="pageInfo">00 / 00</div>
-    <div class="progress-bar-container">
-        <div class="progress-bar" id="progressBar"></div>
+    <div class="hud-bottom">
+        <div class="page-counter" id="pageCounter">00 / 00</div>
+        <div class="loading-bar"><div class="loading-progress" id="progressBar"></div></div>
     </div>
 </div>
 
 <script>
     // ==========================================
-    // 1. 設定區域 (LOGIC 不變)
+    // 1. 設定區域
     // ==========================================
     const rootFolder = '2B'; 
-
     const bookData = [
-        // 為了展示密集效果，我多複製了幾組，你可以改成你真實的資料
         { folder: '2B第1組', title: '2B第1組', count: 13 },
         { folder: '2B第2組', title: '2B第2組', count: 12 },
-        { folder: 'gp3', title: 'PROJECT-03', count: 8 },
-        { folder: 'gp1', title: 'DATA-LOG 04', count: 5 },
-        { folder: 'gp2', title: 'DATA-LOG 05', count: 12 },
-        { folder: 'gp3', title: 'DATA-LOG 06', count: 8 },
-        { folder: 'gp1', title: 'ARCHIVE-X', count: 5 },
-        { folder: 'gp2', title: 'ARCHIVE-Y', count: 12 },
+        { folder: 'gp3', title: 'MISSION: GAMMA', count: 8 },
+        // 增加更多...
     ];
 
     // ==========================================
@@ -262,30 +259,24 @@
     const grid = document.getElementById('bookGrid');
 
     bookData.forEach((item, idx) => {
-        // 產生路徑
         const coverPath = `${rootFolder}/${item.folder}/b.png`;
         const pages = [];
-        for (let i = 1; i <= item.count; i++) {
-            pages.push(`${rootFolder}/${item.folder}/${i}.png`);
-        }
+        for (let i = 1; i <= item.count; i++) pages.push(`${rootFolder}/${item.folder}/${i}.png`);
         
-        // 產生像 "ID: 001" 這樣的裝飾編號
         const idStr = (idx + 1).toString().padStart(3, '0');
 
         const card = document.createElement('div');
         card.className = 'book-card';
         card.onclick = () => openBook(pages);
-        
-        // HTML 結構調整為更有科技感的排版
         card.innerHTML = `
             <div class="cover-wrapper">
-                <img src="${coverPath}" class="book-img" loading="lazy" alt="${item.title}" onerror="this.src='${pages[0] || ''}'">
+                <img src="${coverPath}" class="book-img" loading="lazy" onerror="this.src='${pages[0] || ''}'">
             </div>
-            <div class="card-info">
+            <div style="padding: 5px;">
                 <h3 class="book-title">${item.title}</h3>
-                <div class="book-meta">
-                    <span>ID:${idStr}</span>
-                    <span>SIZE:${item.count}</span>
+                <div style="display:flex; justify-content:space-between; color:var(--neon-cyan); font-size:0.7rem;">
+                    <span>ID: ${idStr}</span>
+                    <span>DAT: ${item.count}MB</span>
                 </div>
             </div>
         `;
@@ -293,24 +284,26 @@
     });
 
     // ==========================================
-    // 3. 閱讀器邏輯
+    // 3. Glitch Reader 邏輯 (完全無需 Canvas)
     // ==========================================
     let currentPages = [];
     let currentIndex = 0;
     
     const overlay = document.getElementById('readerOverlay');
     const readerImg = document.getElementById('readerImg');
-    const pageInfo = document.getElementById('pageInfo');
+    const imgContainer = document.getElementById('imgContainer');
+    const pageCounter = document.getElementById('pageCounter');
     const progressBar = document.getElementById('progressBar');
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
 
     function openBook(pages) {
-        if (!pages || pages.length === 0) return;
+        if (!pages.length) return;
         currentPages = pages;
         currentIndex = 0;
         overlay.classList.add('active');
-        loadPage(currentIndex);
+        
+        loadPage(currentIndex, true); // true 代表是第一次打開
     }
 
     function closeBook() {
@@ -325,25 +318,55 @@
         }
     }
 
-    function loadPage(index) {
-        currentIndex = index;
-        readerImg.style.opacity = '0.5'; // 切換時微閃爍效果
-        
-        const tempImg = new Image();
-        tempImg.src = currentPages[index];
-        tempImg.onload = () => {
-            readerImg.src = currentPages[index];
-            readerImg.style.opacity = '1';
-            updateControls();
-        };
+    function loadPage(index, isFirst = false) {
+        // 1. 觸發故障特效 (Glitch Start)
+        // 只有在切換頁面時才觸發強烈故障，如果是第一次打開則稍微輕微一點
+        imgContainer.classList.add('transmitting');
+        readerImg.classList.add('glitch-anim');
+
+        // 模擬數據傳輸延遲 (300ms)
+        setTimeout(() => {
+            currentIndex = index;
+            
+            // 2. 載入新圖片
+            const tempImg = new Image();
+            tempImg.src = currentPages[index];
+            
+            tempImg.onload = () => {
+                readerImg.src = tempImg.src;
+                
+                // 3. 圖片載入後，移除故障效果 (Glitch End)
+                // 再多留一點時間讓 Glitch 跑一下
+                setTimeout(() => {
+                    readerImg.classList.remove('glitch-anim');
+                    imgContainer.classList.remove('transmitting');
+                }, 400);
+
+                updateHUD();
+            };
+        }, 300);
     }
 
-    function updateControls() {
-        // 格式化頁碼為 01 / 10 的樣式
-        const currStr = (currentIndex + 1).toString().padStart(2, '0');
-        const totalStr = currentPages.length.toString().padStart(2, '0');
-        pageInfo.innerText = `${currStr} / ${totalStr}`;
+    // 更新 HUD 和 "黑客解碼" 文字特效
+    function updateHUD() {
+        const targetStr = `${(currentIndex + 1).toString().padStart(2, '0')} / ${currentPages.length.toString().padStart(2, '0')}`;
         
+        // 文字亂碼解碼效果
+        let iter = 0;
+        const interval = setInterval(() => {
+            pageCounter.innerText = targetStr
+                .split("")
+                .map((letter, index) => {
+                    if(index < iter) return letter; // 已經解碼的部分
+                    return "01"[Math.floor(Math.random() * 2)]; // 還沒解碼的部分顯示 0 或 1
+                })
+                .join("");
+            
+            if(iter >= targetStr.length) clearInterval(interval);
+            iter += 1/2; // 控制解碼速度
+        }, 30);
+
+        // 更新進度條
         const percentage = ((currentIndex + 1) / currentPages.length) * 100;
         progressBar.style.width = `${percentage}%`;
 
@@ -361,4 +384,3 @@
 
 </body>
 </html>
-
