@@ -282,17 +282,17 @@
 
             <div id="view-menu" class="view-section active">
                 <div class="menu-container">
-                    <div class="system-logo">成品數據庫<br><span style="font-size:1rem; opacity:0.7;">CROSS-CURRICULAR HUB</span></div>
-                    <button class="menu-btn" onclick="switchView('view-archive')">[ ACCESS BOOKSHELF ]</button>
-                    <button class="menu-btn" onclick="switchView('view-logs')">[ VIEW PROCESS LOGS ]</button>
-                    <div style="margin-top:40px; color:#555; font-size:0.8rem;">SECURE CONNECTION ESTABLISHED // V.2.7</div>
+                    <div class="system-logo">楊修之死<br><span style="font-size:1rem; opacity:0.7;">AI文言故事漫畫創作</span></div>
+                    <button class="menu-btn" onclick="switchView('view-archive')">[ 成品數據庫 ]</button>
+                    <button class="menu-btn" onclick="switchView('view-logs')">[ 學習履歷 ]</button>
+                    <div style="margin-top:40px; color:#555; font-size:0.8rem;">中文教育 X 創科教育 // Ver.2025</div>
                 </div>
             </div>
 
             <div id="view-archive" class="view-section">
                 <div class="view-header">
-                    <h2 class="view-title">ARCHIVE DATABASE</h2>
-                    <div class="back-btn" onclick="switchView('view-menu')">❮ MAIN MENU</div>
+                    <h2 class="view-title">成品數據庫</h2>
+                    <div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
                 </div>
                 <div class="content-scroll">
                     <div class="grid-container" id="bookGrid"></div>
@@ -301,8 +301,8 @@
 
             <div id="view-logs" class="view-section">
                 <div class="view-header">
-                    <h2 class="view-title">LEARNING TIMELINE</h2>
-                    <div class="back-btn" onclick="switchView('view-menu')">❮ MAIN MENU</div>
+                    <h2 class="view-title">學習履歷</h2>
+                    <div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
                 </div>
                 
                 <div class="content-scroll">
@@ -416,7 +416,7 @@
             </div>
 
             <div class="reader-overlay" id="readerOverlay">
-                <div class="close-btn" onclick="closeBook()">[ TERMINATE ]</div>
+                <div class="close-btn" onclick="closeBook()">[ X ]</div>
                 <div class="reader-stage" style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;">
                     <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
                     <div class="tv-screen-anim" id="tvScreenAnim">
@@ -491,14 +491,17 @@
     // ==========================================
     const rootFolder = '2B'; 
     const bookData = [
-        { folder: 'gp1', title: 'PROJECT-01', count: 5 },
-        { folder: 'gp2', title: 'PROJECT-02', count: 12 },
-        { folder: 'gp3', title: 'PROJECT-03', count: 8 },
-        { folder: 'gp1', title: 'DATA-LOG 04', count: 5 },
-        { folder: 'gp2', title: 'DATA-LOG 05', count: 12 },
-        { folder: 'gp3', title: 'EXTRAS-06', count: 6 },
-        { folder: 'gp1', title: 'SKETCH-07', count: 4 },
-        { folder: 'gp2', title: 'FINAL-08', count: 10 },
+        { folder: '2B第1組', title: '2B第1組', count: 13 },
+        { folder: '2B第2組', title: '2B第2組', count: 12 },
+        { folder: '2B第3組', title: '2B第3組', count: 13 },
+        { folder: '2B第4組', title: '2B第4組', count: 12 },
+        { folder: '2B第5組', title: '2B第5組', count: 12 },
+        { folder: '2C第1組', title: '2C第1組', count: 13 },
+        { folder: '2C第2組', title: '2C第2組', count: 11 },
+        { folder: '2C第3組', title: '2C第3組', count: 11 },
+        { folder: '2C第4組', title: '2C第4組', count: 9 },
+        { folder: '2C第5組', title: '2C第5組', count: 12 },
+        { folder: '2C第6組', title: '2C第6組', count: 11 },
     ];
     const grid = document.getElementById('bookGrid');
     bookData.forEach((item, idx) => {
@@ -581,3 +584,4 @@
 
 </body>
 </html>
+
