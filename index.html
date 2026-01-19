@@ -11,23 +11,31 @@
     
     <style>
         /* =========================================
-           基本設定 (維持 Cyberpunk 深色系)
+           基本設定 & 變數
            ========================================= */
         :root {
             --neon-cyan: #00f3ff;
             --neon-pink: #bc13fe;
+            --neon-white: #ffffff;
             --border-color: rgba(0, 243, 255, 0.3);
-            --text-main: #e0f7fa;
-            --bg-panel: rgba(10, 20, 30, 0.8);
+            --bg-dark: #050a10;
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; overflow: hidden;
             background-color: #020408;
             font-family: 'Share Tech Mono', monospace;
+            color: #e0f7fa;
         }
 
-        /* 背景城市與硬體外殼 (保持不變) */
+        /* 滾動條樣式 */
+        * { scrollbar-width: thin; scrollbar-color: var(--neon-cyan) #000; }
+        *::-webkit-scrollbar { width: 6px; background: #000; }
+        *::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
+
+        /* =========================================
+           LAYER 1: 環境背景
+           ========================================= */
         .cyber-environment {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1579573808890-d33170312b00?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
@@ -39,22 +47,34 @@
             box-shadow: inset 0 0 200px rgba(0, 243, 255, 0.2); pointer-events: none;
         }
 
+        /* =========================================
+           LAYER 2: 硬體外殼
+           ========================================= */
         .terminal-unit {
-            position: relative; width: 90%; max-width: 1400px; height: 85%; max-height: 900px;
+            position: relative;
+            width: 90%; max-width: 1400px;
+            height: 85%; max-height: 900px;
             background: #1a1a1d; border: 4px solid #333;
             clip-path: polygon(0 20px, 20px 0, calc(100% - 20px) 0, 100% 20px, 100% calc(100% - 20px), calc(100% - 20px) 100%, 20px 100%, 0 calc(100% - 20px));
             box-shadow: 0 0 0 4px #000, 0 0 30px rgba(0, 243, 255, 0.5), inset 0 0 20px #000;
             padding: 30px; display: flex; flex-direction: column; z-index: 10;
         }
+        .terminal-unit::after {
+            content: 'SYSTEM: CROSS-CURRICULAR v2.7 // ONLINE';
+            position: absolute; bottom: 8px; right: 40px;
+            color: rgba(0, 243, 255, 0.5); font-size: 0.7rem; letter-spacing: 1px;
+        }
 
+        /* =========================================
+           LAYER 3: 螢幕總成
+           ========================================= */
         .screen-container {
             position: relative; width: 100%; height: 100%;
-            background: #050a10; overflow: hidden;
+            background: var(--bg-dark); overflow: hidden;
             border: 2px solid rgba(0, 243, 255, 0.2);
             box-shadow: inset 0 0 30px #000;
         }
 
-        /* CRT 濾鏡 (無掃描線，只有暗角和閃爍) */
         .crt-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 999;
@@ -67,69 +87,63 @@
         @keyframes flicker { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.9; } }
 
         /* =========================================
-           VIEW MANAGEMENT (視圖切換)
+           VIEW MANAGEMENT
            ========================================= */
         .view-section {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column;
-            background: #050a10;
+            background: var(--bg-dark);
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease-in-out;
             z-index: 1;
         }
         .view-section.active { opacity: 1; pointer-events: auto; z-index: 10; }
 
-        /* 通用 Header */
         .view-header {
             padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(to right, rgba(0, 243, 255, 0.1), transparent);
+            background: linear-gradient(to right, rgba(0, 243, 255, 0.1), transparent); flex-shrink: 0;
         }
-        .view-title { font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin: 0; letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-cyan); }
-        
+        .view-title { 
+            font-family: 'Orbitron'; font-size: 1.5rem; color: #fff; margin: 0; 
+            letter-spacing: 2px; text-shadow: 0 0 10px var(--neon-cyan); 
+        }
         .back-btn {
             font-family: 'Share Tech Mono'; color: var(--neon-pink); border: 1px solid var(--neon-pink);
-            padding: 8px 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+            padding: 8px 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; font-size: 0.9rem;
         }
         .back-btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 15px var(--neon-pink); }
+        .content-scroll { flex: 1; overflow-y: auto; padding: 30px; }
 
         /* =========================================
-           1. MAIN MENU (主選單)
+           VIEW 1: MENU
            ========================================= */
         #view-menu {
             justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at center, rgba(0, 243, 255, 0.1) 0%, transparent 60%);
+            background-image: radial-gradient(circle at center, rgba(0, 243, 255, 0.05) 0%, transparent 70%);
         }
-        
-        .menu-container { text-align: center; width: 100%; max-width: 600px; }
-        .system-logo { font-family: 'Orbitron'; font-size: 3rem; margin-bottom: 40px; color: #fff; text-shadow: 0 0 20px var(--neon-cyan); }
-        
+        .menu-container { text-align: center; width: 100%; max-width: 500px; }
+        .system-logo { 
+            font-family: 'Orbitron'; font-size: 2.5rem; margin-bottom: 50px; color: #fff; 
+            text-shadow: 0 0 20px var(--neon-cyan); letter-spacing: 4px;
+        }
         .menu-btn {
-            display: block; width: 100%; margin: 20px 0; padding: 25px;
-            background: rgba(0, 0, 0, 0.6); border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 3px;
+            display: block; width: 100%; margin: 25px 0; padding: 25px;
+            background: rgba(0, 0, 0, 0.7); border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan); font-family: 'Orbitron'; font-size: 1.1rem; letter-spacing: 2px;
             cursor: pointer; position: relative; overflow: hidden; transition: 0.3s;
-            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
         }
         .menu-btn:hover {
             background: var(--neon-cyan); color: #000;
             box-shadow: 0 0 30px rgba(0, 243, 255, 0.4); transform: scale(1.02);
         }
-        .menu-btn::before {
-            content: '>>'; position: absolute; left: 20px; opacity: 0; transition: 0.3s;
-        }
-        .menu-btn:hover::before { opacity: 1; left: 30px; }
+        .menu-btn::before { content: '>>'; position: absolute; left: 15px; opacity: 0; transition: 0.3s; }
+        .menu-btn:hover::before { opacity: 1; left: 25px; }
 
         /* =========================================
-           2. ARCHIVE VIEW (書架)
+           VIEW 2: ARCHIVE
            ========================================= */
-        .content-scroll { flex: 1; overflow-y: auto; padding: 30px; }
-        .content-scroll::-webkit-scrollbar { width: 8px; background: #000; }
-        .content-scroll::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 4px; }
-
-        .grid-container {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 更大的展示空間 */
-            gap: 25px; 
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
         .book-card {
             background: rgba(10, 20, 30, 0.6); border: 1px solid var(--border-color); padding: 10px;
             cursor: pointer; transition: 0.3s; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
@@ -138,22 +152,85 @@
         .cover-wrapper { width: 100%; aspect-ratio: 3/4; overflow: hidden; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.1); }
         .book-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(50%); transition: 0.4s; }
         .book-card:hover .book-img { filter: grayscale(0%); }
-        .book-title { font-family: 'Orbitron'; font-size: 0.9rem; color: #fff; margin: 0; }
-        .book-meta { font-size: 0.75rem; color: var(--neon-cyan); margin-top: 5px; display: flex; justify-content: space-between; }
+        .book-title { font-family: 'Orbitron'; font-size: 0.85rem; color: #fff; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .book-meta { font-size: 0.7rem; color: var(--neon-cyan); margin-top: 4px; display: flex; justify-content: space-between; }
 
         /* =========================================
-           3. LOG VIEW (日誌)
+           VIEW 3: LOGS / TIMELINE
            ========================================= */
-        .log-terminal {
-            font-family: 'Share Tech Mono', monospace; color: rgba(0, 243, 255, 0.8);
-            font-size: 1rem; line-height: 1.8; max-width: 1000px; margin: 0 auto;
+        .timeline-container { max-width: 900px; margin: 0 auto; padding: 20px 0; position: relative; }
+        .timeline-container::before {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 20px; width: 2px;
+            background: rgba(0, 243, 255, 0.3); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         }
-        .log-entry { margin-bottom: 20px; border-left: 2px solid #333; padding-left: 15px; }
-        .log-time { color: var(--neon-pink); margin-right: 15px; font-weight: bold; }
-        .highlight { color: #fff; text-shadow: 0 0 5px #fff; }
+        .timeline-entry { position: relative; margin-bottom: 40px; padding-left: 60px; opacity: 0.9; transition: 0.3s; }
+        .timeline-entry:hover { opacity: 1; transform: translateX(5px); }
+        
+        .timeline-dot {
+            position: absolute; left: 11px; top: 5px; width: 20px; height: 20px;
+            background: #000; border: 2px solid; border-radius: 50%; z-index: 2;
+        }
+        .entry-content {
+            background: rgba(0, 20, 40, 0.5); border: 1px solid rgba(0, 243, 255, 0.2); padding: 20px;
+            position: relative; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+        }
+        
+        .timeline-entry.chinese .timeline-dot { border-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+        .timeline-entry.chinese .entry-content { border-left: 3px solid var(--neon-pink); }
+        .timeline-entry.tech .timeline-dot { border-color: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+        .timeline-entry.tech .entry-content { border-left: 3px solid var(--neon-cyan); }
+        .timeline-entry.reflection .timeline-dot { border-color: var(--neon-white); box-shadow: 0 0 10px var(--neon-white); }
+        .timeline-entry.reflection .entry-content { border-left: 3px solid var(--neon-white); background: rgba(80,80,80,0.2); }
+
+        .entry-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px; }
+        .entry-phase { font-family: 'Orbitron'; font-size: 0.9rem; letter-spacing: 1px; }
+        .entry-subject { font-size: 0.7rem; padding: 2px 8px; border: 1px solid; border-radius: 4px; }
+        .chinese .entry-subject { color: var(--neon-pink); border-color: var(--neon-pink); }
+        .tech .entry-subject { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .reflection .entry-subject { color: #fff; border-color: #fff; }
+        .entry-title { font-size: 1.2rem; color: #fff; margin: 0 0 10px 0; font-weight: bold; }
+        .entry-desc { font-size: 0.95rem; line-height: 1.6; color: #ccc; margin-bottom: 15px; }
+
+        /* --- 圖片框 (16:9 + Cross-fade) --- */
+        .entry-attachment {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 1px solid rgba(255,255,255,0.1); 
+            position: relative; overflow: hidden;
+            cursor: crosshair;
+        }
+        
+        .entry-img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            filter: grayscale(70%) contrast(1.1); 
+            /* 增加 opacity 的 transition 達到淡入淡出 */
+            transition: filter 0.3s, opacity 0.5s ease-in-out; 
+            opacity: 1;
+        }
+        
+        .entry-attachment:hover .entry-img { 
+            filter: grayscale(0%) contrast(1); 
+        }
+
+        /* JS 會切換這個 class 來觸發淡出 */
+        .entry-img.fading-out {
+            opacity: 0;
+        }
+        
+        .att-label {
+            position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.8);
+            color: var(--neon-cyan); font-size: 0.7rem; padding: 3px 8px; pointer-events: none; z-index: 5;
+        }
+        .scroll-indicator {
+            position: absolute; bottom: 5px; right: 5px;
+            font-size: 0.6rem; color: rgba(255,255,255,0.5); font-family: 'Orbitron';
+            opacity: 0; transition: 0.3s;
+        }
+        .entry-attachment:hover .scroll-indicator { opacity: 1; }
 
         /* =========================================
-           READER (閱讀器 - 保持在最上層)
+           POPUP READER
            ========================================= */
         .reader-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -162,17 +239,8 @@
             opacity: 0; pointer-events: none; transition: 0.3s;
         }
         .reader-overlay.active { opacity: 1; pointer-events: auto; }
-
-        .tv-screen-anim {
-            position: relative; max-width: 95%; max-height: 100%;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .reader-img-display {
-            max-width: 100%; max-height: 80vh;
-            border: 1px solid var(--neon-cyan); box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
-        }
-
-        /* 閱讀器按鈕 */
+        .tv-screen-anim { position: relative; max-width: 95%; max-height: 100%; display: flex; justify-content: center; align-items: center; }
+        .reader-img-display { max-width: 100%; max-height: 80vh; border: 1px solid var(--neon-cyan); box-shadow: 0 0 30px rgba(0, 243, 255, 0.15); }
         .nav-btn {
             position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 80px;
             background: rgba(0,0,0,0.5); border: 1px solid var(--neon-cyan); color: var(--neon-cyan);
@@ -187,8 +255,7 @@
         }
         .close-btn:hover { background: #ff3333; color: #000; }
         .page-info { position: absolute; bottom: 20px; color: var(--neon-cyan); font-family: 'Orbitron'; }
-
-        /* TV Animation (CRT開關機) */
+        
         @keyframes turn-on {
             0% { transform: scale(0.005, 0); filter: brightness(20); opacity: 0; }
             30% { transform: scale(0.005, 0.005); filter: brightness(10); opacity: 1; }
@@ -215,26 +282,17 @@
 
             <div id="view-menu" class="view-section active">
                 <div class="menu-container">
-                    <div class="system-logo">楊修之死<br><span style="font-size:1rem; opacity:0.7;">AI文言故事漫畫創作</span></div>
-                    
-                    <button class="menu-btn" onclick="switchView('view-archive')">
-                        [ 成品數據庫 ]
-                    </button>
-                    
-                    <button class="menu-btn" onclick="switchView('view-logs')">
-                        [ 學習履歷 ]
-                    </button>
-                    
-                    <div style="margin-top:40px; color:#555; font-size:0.8rem;">
-                        中文教育 X STEM // V.2015
-                    </div>
+                    <div class="system-logo">成品數據庫<br><span style="font-size:1rem; opacity:0.7;">CROSS-CURRICULAR HUB</span></div>
+                    <button class="menu-btn" onclick="switchView('view-archive')">[ ACCESS BOOKSHELF ]</button>
+                    <button class="menu-btn" onclick="switchView('view-logs')">[ VIEW PROCESS LOGS ]</button>
+                    <div style="margin-top:40px; color:#555; font-size:0.8rem;">SECURE CONNECTION ESTABLISHED // V.2.7</div>
                 </div>
             </div>
 
             <div id="view-archive" class="view-section">
                 <div class="view-header">
-                    <h2 class="view-title">成品數據庫</h2>
-                    <div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
+                    <h2 class="view-title">ARCHIVE DATABASE</h2>
+                    <div class="back-btn" onclick="switchView('view-menu')">❮ MAIN MENU</div>
                 </div>
                 <div class="content-scroll">
                     <div class="grid-container" id="bookGrid"></div>
@@ -243,23 +301,122 @@
 
             <div id="view-logs" class="view-section">
                 <div class="view-header">
-                    <h2 class="view-title">學習履歷</h2>
-                    <div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
+                    <h2 class="view-title">LEARNING TIMELINE</h2>
+                    <div class="back-btn" onclick="switchView('view-menu')">❮ MAIN MENU</div>
                 </div>
+                
                 <div class="content-scroll">
-                    <div class="log-terminal">
-                        <div class="log-entry"><span class="log-time">[10:24:32]</span> SYSTEM INIT >> Loading creative assets modules... <span class="highlight">DONE</span>.</div>
-                        <div class="log-entry"><span class="log-time">[10:24:35]</span> AI-CORE >> Generating initial sketches for "Project-03".</div>
-                        <div class="log-entry"><span class="log-time">[10:25:12]</span> USER INPUT >> Refining details on character design layer.</div>
-                        <div class="log-entry"><span class="log-time">[10:26:45]</span> RENDERING >> Processing high-res textures... <span class="highlight">85%</span></div>
-                        <div class="log-entry"><span class="log-time">[10:27:01]</span> EXPORT >> Finalizing "gp2/4.png" to archive database.</div>
-                        <div class="log-entry"><span class="log-time">[CURRENT]</span> AWAITING NEXT COMMAND... <span style="animation:flicker 1s infinite">_</span></div>
+                    <div class="timeline-container">
+
+                        <div class="timeline-entry chinese">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header"><span class="entry-phase">PHASE_01 // INIT</span><span class="entry-subject">CHINESE</span></div>
+                                <h3 class="entry-title">教學導入：文體解析</h3>
+                                <div class="entry-desc">深入剖析文本結構與人物特徵，為後續創作建立基礎資料庫。</div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: CLASSROOM_01</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974" 
+                                         data-sequence="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073,https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2000"
+                                         class="entry-img hover-scroll" alt="中文教學">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-entry chinese">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header"><span class="entry-phase">PHASE_02 // INPUT</span><span class="entry-subject">DRAMA</span></div>
+                                <h3 class="entry-title">戲劇體驗：《楊修之死》</h3>
+                                <div class="entry-desc">邀請專業劇團進行音樂互動劇場。透過觀看與互動，學生從立體視角理解角色衝突。</div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: THEATER_EVENT</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="https://images.unsplash.com/photo-1503095392237-fc785880c4c3?q=80&w=2071"
+                                         data-sequence="https://images.unsplash.com/photo-1507676184212-d0378b30263b?q=80&w=2069,https://images.unsplash.com/photo-1478720568477-152d9b164e63?q=80&w=2066"
+                                         class="entry-img hover-scroll" alt="劇團表演">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-entry tech">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header"><span class="entry-phase">PHASE_03 // CODE</span><span class="entry-subject">STEAM</span></div>
+                                <h3 class="entry-title">指令工程：Prompt Design</h3>
+                                <div class="entry-desc">將文學語言轉譯為 AI 指令。學習關鍵詞提取，定義漫畫風格及人物特徵。</div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: PROMPT_WORK</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070"
+                                         data-sequence="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070,https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=2070"
+                                         class="entry-img hover-scroll" alt="書寫Prompt">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-entry tech">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header"><span class="entry-phase">PHASE_04 // EXECUTE</span><span class="entry-subject">AI_TOOLS</span></div>
+                                <h3 class="entry-title">工具應用：Gemini Story Book</h3>
+                                <div class="entry-desc">運用 AI 平台生成圖像。學生實際操作工具，觀察文字如何轉化為視覺圖像。</div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: GENERATION</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070"
+                                         data-sequence="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965,https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070"
+                                         class="entry-img hover-scroll" alt="使用工具">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-entry tech">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header"><span class="entry-phase">PHASE_05 // DEBUG</span><span class="entry-subject">REFINEMENT</span></div>
+                                <h3 class="entry-title">迭代優化：成品修定</h3>
+                                <div class="entry-desc">檢視生成結果與原著的落差。調整 Prompt 參數，修正人物崩壞或場景錯誤。</div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: FINAL_CHECK</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070"
+                                         data-sequence="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070,https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070"
+                                         class="entry-img hover-scroll" alt="成品修訂">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-entry reflection">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header"><span class="entry-phase">PHASE_06 // REPORT</span><span class="entry-subject">VALUES</span></div>
+                                <h3 class="entry-title">反思總結：解難與版權</h3>
+                                <div class="entry-desc">
+                                    <span style="color:#fff;font-weight:bold;">[解難]</span> 分析非預期畫面的成因與解決方案。<br>
+                                    <span style="color:#fff;font-weight:bold;">[價值觀]</span> 探討 AI 生成內容的守法精神與科技倫理。
+                                </div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: REFLECTION</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070"
+                                         data-sequence="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032,https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070"
+                                         class="entry-img hover-scroll" alt="反思討論">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 30px; letter-spacing: 2px;">
+                            // END OF LOG STREAM //
+                        </div>
+
                     </div>
                 </div>
             </div>
 
             <div class="reader-overlay" id="readerOverlay">
-                <div class="close-btn" onclick="closeBook()">[ X ]</div>
+                <div class="close-btn" onclick="closeBook()">[ TERMINATE ]</div>
                 <div class="reader-stage" style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;">
                     <div class="nav-btn prev-btn" onclick="changePage(-1)">❮</div>
                     <div class="tv-screen-anim" id="tvScreenAnim">
@@ -276,39 +433,73 @@
 
 <script>
     // ==========================================
-    // 1. 視圖切換邏輯 (View Switcher)
+    // 1. 視圖切換
     // ==========================================
     function switchView(targetId) {
-        // 隱藏所有視圖
-        document.querySelectorAll('.view-section').forEach(el => {
-            el.classList.remove('active');
-        });
-        
-        // 顯示目標視圖
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(targetId);
-        if(target) {
-            // 為了增加科技感，可以加一個極短的延遲或閃爍，這裡直接切換保持流暢
-            setTimeout(() => {
-                target.classList.add('active');
-            }, 100);
-        }
+        if(target) setTimeout(() => target.classList.add('active'), 50);
     }
 
     // ==========================================
-    // 2. 書架資料生成
+    // 2. 日誌 Hover Scroll 邏輯 (更新：Cross-fade + 2秒間隔)
+    // ==========================================
+    document.querySelectorAll('.hover-scroll').forEach(img => {
+        const originalSrc = img.src;
+        const otherImages = img.dataset.sequence ? img.dataset.sequence.split(',') : [];
+        const fullSequence = [originalSrc, ...otherImages]; 
+        
+        let interval = null;
+        let currentIndex = 0;
+
+        img.parentElement.addEventListener('mouseenter', () => {
+            if (fullSequence.length <= 1) return;
+            currentIndex = 0;
+
+            // 每 2000ms (2秒) 執行一次循環
+            interval = setInterval(() => {
+                // 1. Fade Out (透過 CSS class)
+                img.classList.add('fading-out');
+
+                // 2. 等待 500ms (CSS transition 時間) 後切換圖片
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % fullSequence.length;
+                    img.src = fullSequence[currentIndex];
+                    
+                    // 3. 確保圖片換了之後，移除 class 讓它 Fade In
+                    // (稍微延遲 50ms 確保瀏覽器偵測到 src 變化)
+                    setTimeout(() => {
+                        img.classList.remove('fading-out');
+                    }, 50);
+
+                }, 500); 
+
+            }, 2000); 
+        });
+
+        img.parentElement.addEventListener('mouseleave', () => {
+            clearInterval(interval);
+            // 立即重置回第一張圖，並確保 opacity 回到 1
+            img.classList.remove('fading-out');
+            img.src = originalSrc;
+            currentIndex = 0;
+        });
+    });
+
+    // ==========================================
+    // 3. 書架資料生成
     // ==========================================
     const rootFolder = '2B'; 
     const bookData = [
-        { folder: '2B第1組', title: '2B第1組', count: 13 },
-        { folder: '2B第2組', title: '2B第2組', count: 12 },
+        { folder: 'gp1', title: 'PROJECT-01', count: 5 },
+        { folder: 'gp2', title: 'PROJECT-02', count: 12 },
         { folder: 'gp3', title: 'PROJECT-03', count: 8 },
         { folder: 'gp1', title: 'DATA-LOG 04', count: 5 },
         { folder: 'gp2', title: 'DATA-LOG 05', count: 12 },
-        { folder: 'gp3', title: 'EXTRAS-06', count: 6 }, // 增加一些數據讓滿版更好看
+        { folder: 'gp3', title: 'EXTRAS-06', count: 6 },
         { folder: 'gp1', title: 'SKETCH-07', count: 4 },
         { folder: 'gp2', title: 'FINAL-08', count: 10 },
     ];
-
     const grid = document.getElementById('bookGrid');
     bookData.forEach((item, idx) => {
         const coverPath = `${rootFolder}/${item.folder}/b.png`;
@@ -318,7 +509,6 @@
         const card = document.createElement('div');
         card.className = 'book-card';
         card.onclick = () => openBook(pages);
-        
         card.innerHTML = `
             <div class="cover-wrapper"><img src="${coverPath}" class="book-img" loading="lazy" onerror="this.src='${pages[0] || ''}'"></div>
             <div>
@@ -330,7 +520,7 @@
     });
 
     // ==========================================
-    // 3. 閱讀器邏輯 (保持不變)
+    // 4. 閱讀器邏輯
     // ==========================================
     let currentPages = []; let currentIndex = 0; let isTransitioning = false;
     const overlay = document.getElementById('readerOverlay');
@@ -347,7 +537,6 @@
         loadPage(currentIndex);
         triggerAnimation('on');
     }
-
     function closeBook() {
         triggerAnimation('off');
         setTimeout(() => {
@@ -356,7 +545,6 @@
             tvScreenAnim.classList.remove('anim-off', 'anim-on');
         }, 300);
     }
-
     function changePage(dir) {
         if (isTransitioning) return;
         const nextIndex = currentIndex + dir;
@@ -376,19 +564,14 @@
             }, 300);
         }
     }
-
     function triggerAnimation(type) {
         tvScreenAnim.classList.remove('anim-on', 'anim-off');
         void tvScreenAnim.offsetWidth; 
         tvScreenAnim.classList.add(type === 'on' ? 'anim-on' : 'anim-off');
     }
-
     function loadPage(index) {
-        currentIndex = index;
-        readerImg.src = currentPages[index];
-        updateControls();
+        currentIndex = index; readerImg.src = currentPages[index]; updateControls();
     }
-
     function updateControls() {
         pageInfo.innerText = `${(currentIndex + 1).toString().padStart(2, '0')} / ${currentPages.length.toString().padStart(2, '0')}`;
         prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
