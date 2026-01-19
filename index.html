@@ -70,7 +70,11 @@
            ========================================= */
         .screen-container {
             position: relative; width: 100%; height: 100%;
-            background: var(--bg-dark); overflow: hidden;
+            /* --- 修改開始 --- */
+            /* 將背景設為 root 目錄下的 bg.png，並填滿容器 */
+            background: url('bg.png') no-repeat center center/cover;
+            /* --- 修改結束 --- */
+            overflow: hidden;
             border: 2px solid rgba(0, 243, 255, 0.2);
             box-shadow: inset 0 0 30px #000;
         }
@@ -92,7 +96,12 @@
         .view-section {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column;
-            background: var(--bg-dark);
+            /* --- 修改開始 --- */
+            /* 原本是 var(--bg-dark)，改為半透明黑色，這樣才能看到底下的 bg.png */
+            background: rgba(5, 10, 16, 0.8); 
+            /* (選用) 加入背景模糊濾鏡，增加科技玻璃質感 */
+            backdrop-filter: blur(2px);
+            /* --- 修改結束 --- */
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease-in-out;
             z-index: 1;
         }
@@ -594,5 +603,6 @@
 
 </body>
 </html>
+
 
 
