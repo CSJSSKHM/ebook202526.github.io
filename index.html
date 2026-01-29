@@ -308,121 +308,173 @@
                 </div>
             </div>
 
-            <div id="view-logs" class="view-section">
-                <div class="view-header">
-                    <h2 class="view-title">學習履歷</h2>
-                    <div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
-                </div>
-                
-                <div class="content-scroll">
-                    <div class="timeline-container">
+			<div id="view-logs" class="view-section">
+				<div class="view-header">
+					<h2 class="view-title">學習履歷 // LEARNING-LOG</h2>
+					<div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
+				</div>
 
-                        <div class="timeline-entry chinese">
-                            <div class="timeline-dot"></div>
-                            <div class="entry-content">
-                                <div class="entry-header"><span class="entry-phase">PHASE_01 // INIT</span><span class="entry-subject">CHINESE</span></div>
-                                <h3 class="entry-title">教學導入：文體解析</h3>
-                                <div class="entry-desc">深入剖析文本結構與人物特徵，為後續創作建立基礎資料庫。</div>
-                                <div class="entry-attachment">
-                                    <span class="att-label">IMG: CLASSROOM_01</span>
-                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-                                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974" 
-                                         data-sequence="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073,https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2000"
-                                         class="entry-img hover-scroll" alt="中文教學">
-                                </div>
-                            </div>
-                        </div>
+				<div class="content-scroll">
+					
+					<div class="intro-matrix-container" style="margin-bottom: 40px; padding: 0 20px;">
+						<div class="matrix-header">
+							<span class="matrix-label">PROJECT: RE_YANGXIU</span>
+							<h3>跨科課程設計架構</h3>
+							<p class="matrix-desc">
+								當古典文學遇見生成式 AI。本課程旨在探索如何將《楊修之死》的文本分析，透過提示工程（Prompt Engineering）轉化為視覺敘事，培養學生在 AI 時代的文學素養與科技應用能力。
+							</p>
+						</div>
 
-                        <div class="timeline-entry chinese">
-                            <div class="timeline-dot"></div>
-                            <div class="entry-content">
-                                <div class="entry-header"><span class="entry-phase">PHASE_02 // INPUT</span><span class="entry-subject">DRAMA</span></div>
-                                <h3 class="entry-title">戲劇體驗：《楊修之死》</h3>
-                                <div class="entry-desc">邀請專業劇團進行音樂互動劇場。透過觀看與互動，學生從立體視角理解角色衝突。</div>
-                                <div class="entry-attachment">
-                                    <span class="att-label">IMG: THEATER_EVENT</span>
-                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-                                    <img src="https://images.unsplash.com/photo-1503095392237-fc785880c4c3?q=80&w=2071"
-                                         data-sequence="https://images.unsplash.com/photo-1507676184212-d0378b30263b?q=80&w=2069,https://images.unsplash.com/photo-1478720568477-152d9b164e63?q=80&w=2066"
-                                         class="entry-img hover-scroll" alt="劇團表演">
-                                </div>
-                            </div>
-                        </div>
+						<div class="skill-bridge" style="display: flex; gap: 10px; margin-top: 20px;">
+							<div class="bridge-card chinese-side" style="flex:1; background: rgba(200, 50, 50, 0.1); border-left: 3px solid #ff4d4d; padding: 15px;">
+								<h4 style="color: #ff8080; margin-bottom: 10px; font-size: 0.9rem;">[ CHINESE // 文學輸入 ]</h4>
+								<ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #ddd;">
+									<li>• 課文內容與文言字詞理解</li>
+									<li>• 故事敘事結構分析</li>
+									<li>• 人物性格立體化分析</li>
+									<li>• 戲劇張力與衝突點</li>
+								</ul>
+							</div>
+							<div class="bridge-icon" style="display: flex; align-items: center; justify-content: center; color: #fff;">
+								➜ 轉化 ➜
+							</div>
+							<div class="bridge-card tech-side" style="flex:1; background: rgba(50, 100, 200, 0.1); border-left: 3px solid #4d94ff; padding: 15px;">
+								<h4 style="color: #80b3ff; margin-bottom: 10px; font-size: 0.9rem;">[ STEAM // 科技輸出 ]</h4>
+								<ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #ddd;">
+									<li>• Gemini 平台操作與指令優化</li>
+									<li>• 故事分鏡設計</li>
+									<li>• 角色視覺設定</li>
+									<li>• 繪本排版與視覺敘事</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 
-                        <div class="timeline-entry tech">
-                            <div class="timeline-dot"></div>
-                            <div class="entry-content">
-                                <div class="entry-header"><span class="entry-phase">PHASE_03 // CODE</span><span class="entry-subject">STEAM</span></div>
-                                <h3 class="entry-title">指令工程：Prompt Design</h3>
-                                <div class="entry-desc">將文學語言轉譯為 AI 指令。學習關鍵詞提取，定義漫畫風格及人物特徵。</div>
-                                <div class="entry-attachment">
-                                    <span class="att-label">IMG: PROMPT_WORK</span>
-                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-                                    <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070"
-                                         data-sequence="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070,https://images.unsplash.com/photo-1555099962-4199c345e5dd?q=80&w=2070"
-                                         class="entry-img hover-scroll" alt="書寫Prompt">
-                                </div>
-                            </div>
-                        </div>
+					<hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 20px 0;">
 
-                        <div class="timeline-entry tech">
-                            <div class="timeline-dot"></div>
-                            <div class="entry-content">
-                                <div class="entry-header"><span class="entry-phase">PHASE_04 // EXECUTE</span><span class="entry-subject">AI_TOOLS</span></div>
-                                <h3 class="entry-title">工具應用：Gemini Story Book</h3>
-                                <div class="entry-desc">運用 AI 平台生成圖像。學生實際操作工具，觀察文字如何轉化為視覺圖像。</div>
-                                <div class="entry-attachment">
-                                    <span class="att-label">IMG: GENERATION</span>
-                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-                                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070"
-                                         data-sequence="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965,https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070"
-                                         class="entry-img hover-scroll" alt="使用工具">
-                                </div>
-                            </div>
-                        </div>
+					<div class="timeline-container">
 
-                        <div class="timeline-entry tech">
-                            <div class="timeline-dot"></div>
-                            <div class="entry-content">
-                                <div class="entry-header"><span class="entry-phase">PHASE_05 // DEBUG</span><span class="entry-subject">REFINEMENT</span></div>
-                                <h3 class="entry-title">迭代優化：成品修定</h3>
-                                <div class="entry-desc">檢視生成結果與原著的落差。調整 Prompt 參數，修正人物崩壞或場景錯誤。</div>
-                                <div class="entry-attachment">
-                                    <span class="att-label">IMG: FINAL_CHECK</span>
-                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-                                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070"
-                                         data-sequence="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070,https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070"
-                                         class="entry-img hover-scroll" alt="成品修訂">
-                                </div>
-                            </div>
-                        </div>
+						<div class="timeline-entry chinese">
+							<div class="timeline-dot"></div>
+							<div class="entry-content">
+								<div class="entry-header">
+									<span class="entry-phase">PHASE_01 // PRE-STUDY</span>
+									<span class="entry-subject" style="color:#ff8080;">CHINESE</span>
+								</div>
+								<h3 class="entry-title">文本解碼：初探《楊修之死》</h3>
+								<div class="entry-desc">
+									學生進行課前預習，疏通文言字詞障礙。初步梳理故事脈絡，理解楊修與曹操之間的矛盾衝突點，為後續的改編創作建立認知基礎。
+								</div>
+								<div class="entry-attachment">
+									<span class="att-label">IMG: TEXT_ANALYSIS</span>
+									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+									<img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974" 
+										 data-sequence="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073,https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2000"
+										 class="entry-img hover-scroll" alt="課文預習與分析">
+								</div>
+							</div>
+						</div>
 
-                        <div class="timeline-entry reflection">
-                            <div class="timeline-dot"></div>
-                            <div class="entry-content">
-                                <div class="entry-header"><span class="entry-phase">PHASE_06 // REPORT</span><span class="entry-subject">VALUES</span></div>
-                                <h3 class="entry-title">反思總結：解難與版權</h3>
-                                <div class="entry-desc">
-                                    <span style="color:#fff;font-weight:bold;">[解難]</span> 分析非預期畫面的成因與解決方案。<br>
-                                    <span style="color:#fff;font-weight:bold;">[價值觀]</span> 探討 AI 生成內容的守法精神與科技倫理。
-                                </div>
-                                <div class="entry-attachment">
-                                    <span class="att-label">IMG: REFLECTION</span>
-                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-                                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070"
-                                         data-sequence="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032,https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070"
-                                         class="entry-img hover-scroll" alt="反思討論">
-                                </div>
-                            </div>
-                        </div>
+						<div class="timeline-entry chinese">
+							<div class="timeline-dot"></div>
+							<div class="entry-content">
+								<div class="entry-header">
+									<span class="entry-phase">PHASE_02 // IMMERSION</span>
+									<span class="entry-subject" style="color:#ff8080;">DRAMA & LIT</span>
+								</div>
+								<h3 class="entry-title">戲劇文言教學示範課</h3>
+								<div class="entry-desc">
+									透過戲劇教學法，學生不僅是讀者，更是劇中人。觀賞專業劇團演繹及小組戲劇匯報，從立體視角分析人物心理變化，定調故事氛圍。
+								</div>
+								<div class="entry-attachment">
+									<span class="att-label">IMG: DRAMA_WORKSHOP</span>
+									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+									<img src="https://images.unsplash.com/photo-1503095392237-fc785880c4c3?q=80&w=2071"
+										 data-sequence="https://images.unsplash.com/photo-1507676184212-d0378b30263b?q=80&w=2069,https://images.unsplash.com/photo-1478720568477-152d9b164e63?q=80&w=2066"
+										 class="entry-img hover-scroll" alt="戲劇教學與學生演繹">
+								</div>
+							</div>
+						</div>
 
-                        <div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 30px; letter-spacing: 2px;">
-                            // END OF LOG STREAM //
-                        </div>
+						<div class="timeline-entry hybrid" style="border-left-color: #d633ff;">
+							<div class="timeline-dot" style="background: #d633ff;"></div>
+							<div class="entry-content">
+								<div class="entry-header">
+									<span class="entry-phase">PHASE_03 // BRIDGE</span>
+									<span class="entry-subject" style="color:#e080ff;">CROSS-DISCIPLINARY</span>
+								</div>
+								<h3 class="entry-title">從文字到分鏡：設計思維導入</h3>
+								<div class="entry-desc">
+									中文科與創科的交匯點。學生將文學分析轉化為工程藍圖。
+									<ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; color: #ccc;">
+										<li><strong>人物設定：</strong>將人物性格特徵轉化為 Prompt 關鍵詞。</li>
+										<li><strong>分鏡規劃：</strong>選定故事關鍵事件，規劃畫面構圖。</li>
+									</ul>
+								</div>
+								<div class="entry-attachment">
+									<span class="att-label">IMG: STORYBOARD_DESIGN</span>
+									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+									<img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070"
+										 data-sequence="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=2070,https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1974"
+										 class="entry-img hover-scroll" alt="分鏡設計草圖">
+								</div>
+							</div>
+						</div>
 
-                    </div>
-                </div>
-            </div>
+						<div class="timeline-entry tech">
+							<div class="timeline-dot"></div>
+							<div class="entry-content">
+								<div class="entry-header">
+									<span class="entry-phase">PHASE_04 // GENERATE</span>
+									<span class="entry-subject" style="color:#80b3ff;">STEAM & AI</span>
+								</div>
+								<h3 class="entry-title">Gemini 繪本創作實戰</h3>
+								<div class="entry-desc">
+									利用 Gemini 平台進行圖像生成。學生學習如何透過修正指令，解決「人物崩壞」或「服飾錯誤」的問題，完成符合原著精神的視覺繪本。
+								</div>
+								<div class="entry-attachment">
+									<span class="att-label">IMG: AI_GENERATION</span>
+									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+									<img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070"
+										 data-sequence="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965,https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070"
+										 class="entry-img hover-scroll" alt="AI生成過程">
+								</div>
+							</div>
+						</div>
+
+						<div class="timeline-entry reflection">
+							<div class="timeline-dot"></div>
+							<div class="entry-content">
+								<div class="entry-header">
+									<span class="entry-phase">PHASE_05 // OUTCOME</span>
+									<span class="entry-subject">PRESENTATION</span>
+								</div>
+								<h3 class="entry-title">小組繪本匯報與反思</h3>
+								<div class="entry-desc">
+									<div class="outcome-grid" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px;">
+										<div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px;">
+											<strong style="color: #fff; display:block; margin-bottom:5px;">[ 學習成效 & 反思 ]</strong>
+											<span style="font-size: 0.85em;">學生展現了跨媒介的文本轉譯能力，成功將抽象文學意象轉化為具體視覺場景；同時能針對 AI 生成內容，展現出對科技倫理與歷史考證的批判性思考。</span>
+										</div>
+									</div>
+								</div>
+								<div class="entry-attachment">
+									<span class="att-label">IMG: FINAL_PRESENTATION</span>
+									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+									<img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032"
+										 data-sequence="https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=2070,https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070"
+										 class="entry-img hover-scroll" alt="成果匯報">
+								</div>
+							</div>
+						</div>
+
+						<div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 30px; letter-spacing: 2px;">
+							// END OF LEARNING LOG //
+						</div>
+
+					</div>
+				</div>
+			</div>
 
             <div class="reader-overlay" id="readerOverlay">
                 <div class="close-btn" onclick="closeBook()">[ X ]</div>
@@ -603,7 +655,6 @@
 
 </body>
 </html>
-
 
 
 
