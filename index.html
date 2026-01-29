@@ -280,6 +280,7 @@
         .anim-on { animation: turn-on 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .anim-off { animation: turn-off 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 
+		
     </style>
 </head>
 <body>
@@ -386,12 +387,32 @@
 								<div class="entry-desc">
 									透過戲劇教學法，學生不僅是讀者，更是劇中人。觀賞專業劇團演繹及小組戲劇匯報，從立體視角分析人物心理變化，定調故事氛圍。
 								</div>
-								<div class="entry-attachment">
-									<span class="att-label">IMG: DRAMA_WORKSHOP</span>
-									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-									<img src="https://images.unsplash.com/photo-1503095392237-fc785880c4c3?q=80&w=2071"
-										 data-sequence="https://images.unsplash.com/photo-1507676184212-d0378b30263b?q=80&w=2069,https://images.unsplash.com/photo-1478720568477-152d9b164e63?q=80&w=2066"
-										 class="entry-img hover-scroll" alt="戲劇教學與學生演繹">
+
+								<div class="entry-attachment" style="position: relative; background: #000; border-radius: 8px; overflow: hidden; min-height: 250px;">
+									<span class="att-label" style="z-index: 5;">MEDIA: DRAMA_LOGS</span>
+
+									<div id="drama-slide-0" class="drama-slide" style="display: block; width: 100%; height: 100%;">
+										<img src="drama_pic1.jpg" style="width: 100%; height: auto; display: block;" alt="封面圖">
+									</div>
+
+									<div id="drama-slide-1" class="drama-slide" style="display: none; width: 100%; height: 100%;">
+										<video id="drama-vid-1" controls style="width: 100%; height: auto; display: block;">
+											<source src="drama_1.mov" type="video/mp4">
+											<source src="drama_1.mov" type="video/quicktime">
+										</video>
+									</div>
+
+									<div id="drama-slide-2" class="drama-slide" style="display: none; width: 100%; height: 100%;">
+										<video id="drama-vid-2" controls style="width: 100%; height: auto; display: block;">
+											<source src="drama_2.mov" type="video/mp4">
+											<source src="drama_2.mov" type="video/quicktime">
+										</video>
+									</div>
+
+									<div onclick="moveDramaSlide(-1)" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❮</div>
+									<div onclick="moveDramaSlide(1)" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❯</div>
+								
+									<div id="drama-slide-num" style="position: absolute; bottom: 10px; right: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; font-size: 12px; border-radius: 4px;">1 / 3</div>
 								</div>
 							</div>
 						</div>
@@ -503,7 +524,7 @@
     }
 
     // ==========================================
-    // 2. 日誌 Hover Scroll 邏輯 (更新：Cross-fade + 2秒間隔)
+    // 2. 日誌 Hover Scroll 邏輯 (Phase 1,3,4,5)
     // ==========================================
     document.querySelectorAll('.hover-scroll').forEach(img => {
         const originalSrc = img.src;
@@ -511,39 +532,29 @@
         const fullSequence = [originalSrc, ...otherImages]; 
         
         let interval = null;
-        let currentIndex = 0;
+        let scrollIndex = 0; // 改名以免衝突
 
         img.parentElement.addEventListener('mouseenter', () => {
             if (fullSequence.length <= 1) return;
-            currentIndex = 0;
+            scrollIndex = 0;
 
-            // 每 2000ms (2秒) 執行一次循環
             interval = setInterval(() => {
-                // 1. Fade Out (透過 CSS class)
                 img.classList.add('fading-out');
-
-                // 2. 等待 500ms (CSS transition 時間) 後切換圖片
                 setTimeout(() => {
-                    currentIndex = (currentIndex + 1) % fullSequence.length;
-                    img.src = fullSequence[currentIndex];
-                    
-                    // 3. 確保圖片換了之後，移除 class 讓它 Fade In
-                    // (稍微延遲 50ms 確保瀏覽器偵測到 src 變化)
+                    scrollIndex = (scrollIndex + 1) % fullSequence.length;
+                    img.src = fullSequence[scrollIndex];
                     setTimeout(() => {
                         img.classList.remove('fading-out');
                     }, 50);
-
                 }, 500); 
-
             }, 2000); 
         });
 
         img.parentElement.addEventListener('mouseleave', () => {
             clearInterval(interval);
-            // 立即重置回第一張圖，並確保 opacity 回到 1
             img.classList.remove('fading-out');
             img.src = originalSrc;
-            currentIndex = 0;
+            scrollIndex = 0;
         });
     });
 
@@ -575,28 +586,32 @@
         { folder: '2C第6組', title: '2C第6組', count: 11 },
     ];
     const grid = document.getElementById('bookGrid');
-    bookData.forEach((item, idx) => {
-        const coverPath = `${rootFolder}/${item.folder}/b.png`;
-        const pages = [];
-        for (let i = 1; i <= item.count; i++) pages.push(`${rootFolder}/${item.folder}/${i}.png`);
-        
-        const card = document.createElement('div');
-        card.className = 'book-card';
-        card.onclick = () => openBook(pages);
-        card.innerHTML = `
-            <div class="cover-wrapper"><img src="${coverPath}" class="book-img" loading="lazy" onerror="this.src='${pages[0] || ''}'"></div>
-            <div>
-                <h3 class="book-title">${item.title}</h3>
-                <div class="book-meta"><span>ID:${(idx+1).toString().padStart(3,'0')}</span><span>${item.count}P</span></div>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
+    if (grid) { // 加上判斷防止報錯
+        bookData.forEach((item, idx) => {
+            const coverPath = `${rootFolder}/${item.folder}/b.png`;
+            const pages = [];
+            for (let i = 1; i <= item.count; i++) pages.push(`${rootFolder}/${item.folder}/${i}.png`);
+            
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.onclick = () => openBook(pages);
+            card.innerHTML = `
+                <div class="cover-wrapper"><img src="${coverPath}" class="book-img" loading="lazy" onerror="this.src='${pages[0] || ''}'"></div>
+                <div>
+                    <h3 class="book-title">${item.title}</h3>
+                    <div class="book-meta"><span>ID:${(idx+1).toString().padStart(3,'0')}</span><span>${item.count}P</span></div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
 
     // ==========================================
     // 4. 閱讀器邏輯
     // ==========================================
-    let currentPages = []; let currentIndex = 0; let isTransitioning = false;
+    let currentPages = []; 
+    let readerIndex = 0; // 改名為 readerIndex 避免混淆
+    let isTransitioning = false;
     const overlay = document.getElementById('readerOverlay');
     const readerImg = document.getElementById('readerImg');
     const tvScreenAnim = document.getElementById('tvScreenAnim');
@@ -606,9 +621,9 @@
 
     function openBook(pages) {
         if (!pages.length) return;
-        currentPages = pages; currentIndex = 0;
+        currentPages = pages; readerIndex = 0;
         overlay.classList.add('active');
-        loadPage(currentIndex);
+        loadPage(readerIndex);
         triggerAnimation('on');
     }
     function closeBook() {
@@ -621,14 +636,14 @@
     }
     function changePage(dir) {
         if (isTransitioning) return;
-        const nextIndex = currentIndex + dir;
+        const nextIndex = readerIndex + dir;
         if (nextIndex >= 0 && nextIndex < currentPages.length) {
             isTransitioning = true;
             triggerAnimation('off');
             setTimeout(() => {
-                currentIndex = nextIndex;
+                readerIndex = nextIndex;
                 const tempImg = new Image();
-                tempImg.src = currentPages[currentIndex];
+                tempImg.src = currentPages[readerIndex];
                 tempImg.onload = () => {
                     readerImg.src = tempImg.src;
                     updateControls();
@@ -644,12 +659,46 @@
         tvScreenAnim.classList.add(type === 'on' ? 'anim-on' : 'anim-off');
     }
     function loadPage(index) {
-        currentIndex = index; readerImg.src = currentPages[index]; updateControls();
+        readerIndex = index; readerImg.src = currentPages[index]; updateControls();
     }
     function updateControls() {
-        pageInfo.innerText = `${(currentIndex + 1).toString().padStart(2, '0')} / ${currentPages.length.toString().padStart(2, '0')}`;
-        prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
-        nextBtn.style.visibility = currentIndex === currentPages.length - 1 ? 'hidden' : 'visible';
+        pageInfo.innerText = `${(readerIndex + 1).toString().padStart(2, '0')} / ${currentPages.length.toString().padStart(2, '0')}`;
+        prevBtn.style.visibility = readerIndex === 0 ? 'hidden' : 'visible';
+        nextBtn.style.visibility = readerIndex === currentPages.length - 1 ? 'hidden' : 'visible';
+    }
+
+    // ==========================================
+    // 5. PHASE 02 戲劇簡單輪播 (新增整合)
+    // ==========================================
+    let currentDramaIdx = 0;
+    const totalDramaSlides = 3; // 1張圖 + 2個影片
+
+    function moveDramaSlide(step) {
+        // 1. 隱藏當前 Slide
+        const currentSlide = document.getElementById('drama-slide-' + currentDramaIdx);
+        if (currentSlide) {
+            currentSlide.style.display = 'none';
+            // 如果當前是影片，暫停播放
+            if (currentDramaIdx > 0) {
+                const vid = document.getElementById('drama-vid-' + currentDramaIdx);
+                if (vid) vid.pause();
+            }
+        }
+
+        // 2. 計算下一張
+        currentDramaIdx += step;
+        if (currentDramaIdx >= totalDramaSlides) currentDramaIdx = 0;
+        if (currentDramaIdx < 0) currentDramaIdx = totalDramaSlides - 1;
+
+        // 3. 顯示新 Slide
+        const nextSlide = document.getElementById('drama-slide-' + currentDramaIdx);
+        if (nextSlide) nextSlide.style.display = 'block';
+
+        // 4. 更新頁碼
+        const numIndicator = document.getElementById('drama-slide-num');
+        if (numIndicator) {
+            numIndicator.innerText = (currentDramaIdx + 1) + " / " + totalDramaSlides;
+        }
     }
 </script>
 
