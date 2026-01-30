@@ -464,30 +464,52 @@
 						</div>
 
 						<div class="timeline-entry reflection">
-							<div class="timeline-dot"></div>
-							<div class="entry-content">
-								<div class="entry-header">
-									<span class="entry-phase">PHASE_05 // OUTCOME</span>
-									<span class="entry-subject">PRESENTATION</span>
-								</div>
-								<h3 class="entry-title">小組繪本匯報與反思</h3>
-								<div class="entry-desc">
-									<div class="outcome-grid" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px;">
-										<div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px;">
-											<strong style="color: #fff; display:block; margin-bottom:5px;">[ 學習成效 & 反思 ]</strong>
-											<span style="font-size: 0.85em;">學生展現了跨媒介的文本轉譯能力，成功將抽象文學意象轉化為具體視覺場景；同時能針對 AI 生成內容，展現出對科技倫理與歷史考證的批判性思考。</span>
-										</div>
-									</div>
-								</div>
-								<div class="entry-attachment">
-									<span class="att-label">IMG: FINAL_PRESENTATION</span>
-									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-									<img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032"
-										 data-sequence="https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=2070,https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070"
-										 class="entry-img hover-scroll" alt="成果匯報">
-								</div>
-							</div>
-						</div>
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header">
+                                    <span class="entry-phase">PHASE_05 // OUTCOME</span>
+                                    <span class="entry-subject" style="color:#a0a0ff;">PRESENTATION</span>
+                                </div>
+                                
+                                <h3 class="entry-title">小組繪本匯報與反思</h3>
+                                <div class="entry-desc">
+                                    <div class="outcome-grid" style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px;">
+                                        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px;">
+                                            <strong style="color: #fff; display:block; margin-bottom:5px;">[ 學習成效 & 反思 ]</strong>
+                                            <span style="font-size: 0.85em;">學生展現了跨媒介的文本轉譯能力，成功將抽象文學意象轉化為具體視覺場景；同時能針對 AI 生成內容，展現出對科技倫理與歷史考證的批判性思考。</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="entry-attachment" style="position: relative; background: #000; border-radius: 8px; overflow: hidden; min-height: 250px;">
+                                    <span class="att-label" style="z-index: 5;">VIDEO: STUDENT_PRESENTATIONS</span>
+
+                                    <div id="present-slide-0" class="present-slide" style="display: block; width: 100%; height: 100%;">
+                                        <video id="present-vid-0" controls style="width: 100%; height: auto; display: block;">
+                                            <source src="stem_present2a.mp4" type="video/mp4">
+                                            您的瀏覽器不支援 HTML5 影片。
+                                        </video>
+                                    </div>
+
+                                    <div id="present-slide-1" class="present-slide" style="display: none; width: 100%; height: 100%;">
+                                        <video id="present-vid-1" controls style="width: 100%; height: auto; display: block;">
+                                            <source src="stem_present2b.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+
+                                    <div id="present-slide-2" class="present-slide" style="display: none; width: 100%; height: 100%;">
+                                        <video id="present-vid-2" controls style="width: 100%; height: auto; display: block;">
+                                            <source src="stem_present2c.mp4" type="video/mp4">
+                                        </video>
+                                    </div>
+
+                                    <div onclick="movePresentSlide(-1)" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❮</div>
+                                    <div onclick="movePresentSlide(1)" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❯</div>
+                                    
+                                    <div id="present-slide-num" style="position: absolute; bottom: 10px; right: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; font-size: 12px; border-radius: 4px;">1 / 3</div>
+                                </div>
+                            </div>
+                        </div>
 
 						<div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 30px; letter-spacing: 2px;">
 							// END OF LEARNING LOG //
@@ -532,7 +554,7 @@
         const fullSequence = [originalSrc, ...otherImages]; 
         
         let interval = null;
-        let scrollIndex = 0; // 改名以免衝突
+        let scrollIndex = 0;
 
         img.parentElement.addEventListener('mouseenter', () => {
             if (fullSequence.length <= 1) return;
@@ -585,8 +607,9 @@
         { folder: '2C第5組', title: '2C第5組', count: 12 },
         { folder: '2C第6組', title: '2C第6組', count: 11 },
     ];
+
     const grid = document.getElementById('bookGrid');
-    if (grid) { // 加上判斷防止報錯
+    if (grid) { 
         bookData.forEach((item, idx) => {
             const coverPath = `${rootFolder}/${item.folder}/b.png`;
             const pages = [];
@@ -610,7 +633,7 @@
     // 4. 閱讀器邏輯
     // ==========================================
     let currentPages = []; 
-    let readerIndex = 0; // 改名為 readerIndex 避免混淆
+    let readerIndex = 0; 
     let isTransitioning = false;
     const overlay = document.getElementById('readerOverlay');
     const readerImg = document.getElementById('readerImg');
@@ -668,7 +691,7 @@
     }
 
     // ==========================================
-    // 5. PHASE 02 戲劇簡單輪播 (新增整合)
+    // 5. PHASE 02 戲劇簡單輪播
     // ==========================================
     let currentDramaIdx = 0;
     const totalDramaSlides = 3; // 1張圖 + 2個影片
@@ -678,7 +701,7 @@
         const currentSlide = document.getElementById('drama-slide-' + currentDramaIdx);
         if (currentSlide) {
             currentSlide.style.display = 'none';
-            // 如果當前是影片，暫停播放
+            // 如果當前是影片，暫停播放 (索引大於0代表是影片)
             if (currentDramaIdx > 0) {
                 const vid = document.getElementById('drama-vid-' + currentDramaIdx);
                 if (vid) vid.pause();
@@ -700,10 +723,46 @@
             numIndicator.innerText = (currentDramaIdx + 1) + " / " + totalDramaSlides;
         }
     }
+
+    // ==========================================
+    // 6. PHASE 05 成果匯報輪播 (新增整合)
+    // ==========================================
+    let currentPresentIndex = 0;
+    // 定義 Slide 的 ID 陣列 (三個皆為影片)
+    const presentSlideIds = ["present-slide-0", "present-slide-1", "present-slide-2"];
+
+    function movePresentSlide(n) {
+        // 1. 隱藏當前的 Slide & 暫停影片
+        const oldSlide = document.getElementById(presentSlideIds[currentPresentIndex]);
+        const oldVid = document.getElementById(`present-vid-${currentPresentIndex}`);
+        
+        if (oldSlide) oldSlide.style.display = "none";
+        if (oldVid) oldVid.pause(); // 切換時自動暫停，避免背景有聲音
+
+        // 2. 計算新的 Index (循環邏輯)
+        currentPresentIndex += n;
+        if (currentPresentIndex >= presentSlideIds.length) {
+            currentPresentIndex = 0; 
+        } else if (currentPresentIndex < 0) {
+            currentPresentIndex = presentSlideIds.length - 1; 
+        }
+
+        // 3. 顯示新的 Slide
+        const newSlide = document.getElementById(presentSlideIds[currentPresentIndex]);
+        if (newSlide) newSlide.style.display = "block";
+
+        // 4. 更新右下角的頁碼文字
+        const numDisplay = document.getElementById("present-slide-num");
+        if (numDisplay) {
+            numDisplay.innerText = `${currentPresentIndex + 1} / ${presentSlideIds.length}`;
+        }
+    }
+
 </script>
 
 </body>
 </html>
+
 
 
 
