@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>楊修之死 - AI文言故事漫畫創作</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://gs.jurieo.com/gemini/fonts-googleapis">
+    <link rel="preconnect" href="https://gs.jurieo.com/gemini/fonts-gstatic" crossorigin>
+    <link href="https://gs.jurieo.com/gemini/fonts-googleapis/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
@@ -70,10 +70,7 @@
            ========================================= */
         .screen-container {
             position: relative; width: 100%; height: 100%;
-            /* --- 修改開始 --- */
-            /* 將背景設為 root 目錄下的 bg.png，並填滿容器 */
             background: url('bg.jpg') no-repeat center center/cover;
-            /* --- 修改結束 --- */
             overflow: hidden;
             border: 2px solid rgba(0, 243, 255, 0.2);
             box-shadow: inset 0 0 30px #000;
@@ -96,12 +93,8 @@
         .view-section {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column;
-            /* --- 修改開始 --- */
-            /* 原本是 var(--bg-dark)，改為半透明黑色，這樣才能看到底下的 bg.png */
             background: rgba(5, 10, 16, 0.8); 
-            /* (選用) 加入背景模糊濾鏡，增加科技玻璃質感 */
             backdrop-filter: blur(0.5px);
-            /* --- 修改結束 --- */
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease-in-out;
             z-index: 1;
         }
@@ -207,25 +200,22 @@
             background: #000;
             border: 1px solid rgba(255,255,255,0.1); 
             position: relative; overflow: hidden;
-            cursor: crosshair;
+            /* 移除原本的 cursor: crosshair，改由圖片本身觸發 */
         }
         
         .entry-img { 
             width: 100%; height: 100%; object-fit: cover; 
             filter: grayscale(70%) contrast(1.1); 
-            /* 增加 opacity 的 transition 達到淡入淡出 */
             transition: filter 0.3s, opacity 0.5s ease-in-out; 
             opacity: 1;
+            cursor: zoom-in; /* 提示用戶可以放大 */
         }
         
         .entry-attachment:hover .entry-img { 
             filter: grayscale(0%) contrast(1); 
         }
 
-        /* JS 會切換這個 class 來觸發淡出 */
-        .entry-img.fading-out {
-            opacity: 0;
-        }
+        .entry-img.fading-out { opacity: 0; }
         
         .att-label {
             position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.8);
@@ -234,12 +224,12 @@
         .scroll-indicator {
             position: absolute; bottom: 5px; right: 5px;
             font-size: 0.6rem; color: rgba(255,255,255,0.5); font-family: 'Orbitron';
-            opacity: 0; transition: 0.3s;
+            opacity: 0; transition: 0.3s; pointer-events: none; z-index: 5;
         }
         .entry-attachment:hover .scroll-indicator { opacity: 1; }
 
         /* =========================================
-           POPUP READER
+           POPUP READER (書籍閱讀器)
            ========================================= */
         .reader-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -260,7 +250,7 @@
         .prev-btn { left: 20px; } .next-btn { right: 20px; }
         .close-btn {
             position: absolute; top: 20px; right: 20px; color: #ff3333; border: 1px solid #ff3333;
-            padding: 5px 15px; cursor: pointer; font-family: 'Orbitron'; transition: 0.3s;
+            padding: 5px 15px; cursor: pointer; font-family: 'Orbitron'; transition: 0.3s; z-index: 310;
         }
         .close-btn:hover { background: #ff3333; color: #000; }
         .page-info { position: absolute; bottom: 20px; color: var(--neon-cyan); font-family: 'Orbitron'; }
@@ -280,7 +270,25 @@
         .anim-on { animation: turn-on 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .anim-off { animation: turn-off 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
 
-		
+        /* =========================================
+           SINGLE IMAGE LIGHTBOX (單張圖放大器)
+           ========================================= */
+        .lightbox-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 10, 16, 0.95); z-index: 300;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .lightbox-overlay.active { opacity: 1; pointer-events: auto; }
+        .lightbox-img {
+            max-width: 95%; max-height: 90vh;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.3);
+            object-fit: contain;
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .lightbox-overlay.active .lightbox-img { transform: scale(1); }
     </style>
 </head>
 <body>
@@ -309,161 +317,164 @@
                 </div>
             </div>
 
-			<div id="view-logs" class="view-section">
-				<div class="view-header">
-					<h2 class="view-title">學習履歷 // LEARNING-LOG</h2>
-					<div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
-				</div>
+            <div id="view-logs" class="view-section">
+                <div class="view-header">
+                    <h2 class="view-title">學習履歷 // LEARNING-LOG</h2>
+                    <div class="back-btn" onclick="switchView('view-menu')">❮ 回到目錄</div>
+                </div>
 
-				<div class="content-scroll">
-					
-					<div class="intro-matrix-container" style="margin-bottom: 40px; padding: 0 20px;">
-						<div class="matrix-header">
-							<span class="matrix-label">PROJECT: RE_YANGXIU</span>
-							<h3>跨科課程設計架構</h3>
-							<p class="matrix-desc">
-								當古典文學遇見生成式 AI。本課程旨在探索如何將《楊修之死》的文本分析，透過提示工程（Prompt Engineering）轉化為視覺敘事，培養學生在 AI 時代的文學素養與科技應用能力。
-							</p>
-						</div>
+                <div class="content-scroll">
+                    
+                    <div class="intro-matrix-container" style="margin-bottom: 40px; padding: 0 20px;">
+                        <div class="matrix-header">
+                            <span class="matrix-label">PROJECT: RE_YANGXIU</span>
+                            <h3>跨科課程設計架構</h3>
+                            <p class="matrix-desc">
+                                當古典文學遇見生成式 AI。本課程旨在探索如何將《楊修之死》的文本分析，透過提示工程（Prompt Engineering）轉化為視覺敘事，培養學生在 AI 時代的文學素養與科技應用能力。
+                            </p>
+                        </div>
 
-						<div class="skill-bridge" style="display: flex; gap: 10px; margin-top: 20px;">
-							<div class="bridge-card chinese-side" style="flex:1; background: rgba(200, 50, 50, 0.1); border-left: 3px solid #ff4d4d; padding: 15px;">
-								<h4 style="color: #ff8080; margin-bottom: 10px; font-size: 0.9rem;">[ CHINESE // 文學輸入 ]</h4>
-								<ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #ddd;">
-									<li>• 課文內容與文言字詞理解</li>
-									<li>• 故事敘事結構分析</li>
-									<li>• 人物性格立體化分析</li>
-									<li>• 戲劇張力與衝突點</li>
-								</ul>
-							</div>
-							<div class="bridge-icon" style="display: flex; align-items: center; justify-content: center; color: #fff;">
-								➜ 轉化 ➜
-							</div>
-							<div class="bridge-card tech-side" style="flex:1; background: rgba(50, 100, 200, 0.1); border-left: 3px solid #4d94ff; padding: 15px;">
-								<h4 style="color: #80b3ff; margin-bottom: 10px; font-size: 0.9rem;">[ STEAM // 科技輸出 ]</h4>
-								<ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #ddd;">
-									<li>• Gemini 平台操作與指令優化</li>
-									<li>• 故事分鏡設計</li>
-									<li>• 角色視覺設定</li>
-									<li>• 繪本排版與視覺敘事</li>
-								</ul>
-							</div>
-						</div>
-					</div>
+                        <div class="skill-bridge" style="display: flex; gap: 10px; margin-top: 20px;">
+                            <div class="bridge-card chinese-side" style="flex:1; background: rgba(200, 50, 50, 0.1); border-left: 3px solid #ff4d4d; padding: 15px;">
+                                <h4 style="color: #ff8080; margin-bottom: 10px; font-size: 0.9rem;">[ CHINESE // 文學輸入 ]</h4>
+                                <ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #ddd;">
+                                    <li>• 課文內容與文言字詞理解</li>
+                                    <li>• 故事敘事結構分析</li>
+                                    <li>• 人物性格立體化分析</li>
+                                    <li>• 戲劇張力與衝突點</li>
+                                </ul>
+                            </div>
+                            <div class="bridge-icon" style="display: flex; align-items: center; justify-content: center; color: #fff;">
+                                ➜ 轉化 ➜
+                            </div>
+                            <div class="bridge-card tech-side" style="flex:1; background: rgba(50, 100, 200, 0.1); border-left: 3px solid #4d94ff; padding: 15px;">
+                                <h4 style="color: #80b3ff; margin-bottom: 10px; font-size: 0.9rem;">[ STEAM // 科技輸出 ]</h4>
+                                <ul style="list-style: none; padding: 0; font-size: 0.85rem; color: #ddd;">
+                                    <li>• Gemini 平台操作與指令優化</li>
+                                    <li>• 故事分鏡設計</li>
+                                    <li>• 角色視覺設定</li>
+                                    <li>• 繪本排版與視覺敘事</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-					<hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 20px 0;">
+                    <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin: 20px 0;">
 
-					<div class="timeline-container">
+                    <div class="timeline-container">
 
-						<div class="timeline-entry chinese">
-							<div class="timeline-dot"></div>
-							<div class="entry-content">
-								<div class="entry-header">
-									<span class="entry-phase">PHASE_01 // PRE-STUDY</span>
-									<span class="entry-subject" style="color:#ff8080;">CHINESE</span>
-								</div>
-								<h3 class="entry-title">文本解碼：初探《楊修之死》</h3>
-								<div class="entry-desc">
-									學生進行課前預習，疏通文言字詞障礙。初步梳理故事脈絡，理解楊修與曹操之間的矛盾衝突點，為後續的改編創作建立認知基礎。
-								</div>
-								<div class="entry-attachment">
-									<span class="att-label">IMG: TEXT_ANALYSIS</span>
-									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-									<img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974" 
-										 data-sequence="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073,https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=2000"
-										 class="entry-img hover-scroll" alt="課文預習與分析">
-								</div>
-							</div>
-						</div>
+                        <div class="timeline-entry chinese">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header">
+                                    <span class="entry-phase">PHASE_01 // PRE-STUDY</span>
+                                    <span class="entry-subject" style="color:#ff8080;">CHINESE</span>
+                                </div>
+                                <h3 class="entry-title">文本解碼：初探《楊修之死》</h3>
+                                <div class="entry-desc">
+                                    學生進行課前預習，疏通文言字詞障礙。初步梳理故事脈絡，理解楊修與曹操之間的矛盾衝突點，為後續的改編創作建立認知基礎。
+                                </div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: TEXT_ANALYSIS</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="p1_1.JPG" 
+                                         data-sequence="p1_2.JPG,p1_3.JPG"
+                                         class="entry-img hover-scroll" alt="課文預習與分析"
+                                         onclick="openLightbox(this.src)">
+                                </div>
+                            </div>
+                        </div>
 
-						<div class="timeline-entry chinese">
-							<div class="timeline-dot"></div>
-							<div class="entry-content">
-								<div class="entry-header">
-									<span class="entry-phase">PHASE_02 // IMMERSION</span>
-									<span class="entry-subject" style="color:#ff8080;">DRAMA & LIT</span>
-								</div>
-								<h3 class="entry-title">戲劇文言教學示範課</h3>
-								<div class="entry-desc">
-									透過戲劇教學法，學生不僅是讀者，更是劇中人。觀賞專業劇團演繹及小組戲劇匯報，從立體視角分析人物心理變化，定調故事氛圍。
-								</div>
+                        <div class="timeline-entry chinese">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header">
+                                    <span class="entry-phase">PHASE_02 // IMMERSION</span>
+                                    <span class="entry-subject" style="color:#ff8080;">DRAMA & LIT</span>
+                                </div>
+                                <h3 class="entry-title">戲劇文言教學示範課</h3>
+                                <div class="entry-desc">
+                                    透過戲劇教學法，學生不僅是讀者，更是劇中人。觀賞專業劇團演繹及小組戲劇匯報，從立體視角分析人物心理變化，定調故事氛圍。
+                                </div>
 
-								<div class="entry-attachment" style="position: relative; background: #000; border-radius: 8px; overflow: hidden; min-height: 250px;">
-									<span class="att-label" style="z-index: 5;">MEDIA: DRAMA_LOGS</span>
+                                <div class="entry-attachment" style="position: relative; background: #000; border-radius: 8px; overflow: hidden; min-height: 250px;">
+                                    <span class="att-label" style="z-index: 5;">MEDIA: DRAMA_LOGS</span>
 
-									<div id="drama-slide-0" class="drama-slide" style="display: block; width: 100%; height: 100%;">
-										<img src="drama_pic1.JPG" style="width: 100%; height: auto; display: block;" alt="封面圖">
-									</div>
+                                    <div id="drama-slide-0" class="drama-slide" style="display: block; width: 100%; height: 100%;">
+                                        <img src="drama_pic1.JPG" style="width: 100%; height: auto; display: block; cursor: zoom-in;" alt="封面圖" onclick="openLightbox(this.src)">
+                                    </div>
 
-									<div id="drama-slide-1" class="drama-slide" style="display: none; width: 100%; height: 100%;">
-										<video id="drama-vid-1" controls style="width: 100%; height: auto; display: block;">
-											<source src="drama_1.mov" type="video/mp4">
-											<source src="drama_1.mov" type="video/quicktime">
-										</video>
-									</div>
+                                    <div id="drama-slide-1" class="drama-slide" style="display: none; width: 100%; height: 100%;">
+                                        <video id="drama-vid-1" controls style="width: 100%; height: auto; display: block;">
+                                            <source src="drama_1.mov" type="video/mp4">
+                                            <source src="drama_1.mov" type="video/quicktime">
+                                        </video>
+                                    </div>
 
-									<div id="drama-slide-2" class="drama-slide" style="display: none; width: 100%; height: 100%;">
-										<video id="drama-vid-2" controls style="width: 100%; height: auto; display: block;">
-											<source src="drama_2.mov" type="video/mp4">
-											<source src="drama_2.mov" type="video/quicktime">
-										</video>
-									</div>
+                                    <div id="drama-slide-2" class="drama-slide" style="display: none; width: 100%; height: 100%;">
+                                        <video id="drama-vid-2" controls style="width: 100%; height: auto; display: block;">
+                                            <source src="drama_2.mov" type="video/mp4">
+                                            <source src="drama_2.mov" type="video/quicktime">
+                                        </video>
+                                    </div>
 
-									<div onclick="moveDramaSlide(-1)" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❮</div>
-									<div onclick="moveDramaSlide(1)" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❯</div>
-								
-									<div id="drama-slide-num" style="position: absolute; bottom: 10px; right: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; font-size: 12px; border-radius: 4px;">1 / 3</div>
-								</div>
-							</div>
-						</div>
+                                    <div onclick="moveDramaSlide(-1)" style="position: absolute; top: 50%; left: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❮</div>
+                                    <div onclick="moveDramaSlide(1)" style="position: absolute; top: 50%; right: 0; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; padding: 15px 10px; cursor: pointer; user-select: none; z-index: 10;">❯</div>
+                                
+                                    <div id="drama-slide-num" style="position: absolute; bottom: 10px; right: 10px; color: #fff; background: rgba(0,0,0,0.5); padding: 2px 6px; font-size: 12px; border-radius: 4px;">1 / 3</div>
+                                </div>
+                            </div>
+                        </div>
 
-						<div class="timeline-entry hybrid" style="border-left-color: #d633ff;">
-							<div class="timeline-dot" style="background: #d633ff;"></div>
-							<div class="entry-content">
-								<div class="entry-header">
-									<span class="entry-phase">PHASE_03 // BRIDGE</span>
-									<span class="entry-subject" style="color:#e080ff;">CROSS-DISCIPLINARY</span>
-								</div>
-								<h3 class="entry-title">從文字到分鏡：設計思維導入</h3>
-								<div class="entry-desc">
-									中文科與創科的交匯點。學生將文學分析轉化為工程藍圖。
-									<ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; color: #ccc;">
-										<li><strong>人物設定：</strong>將人物性格特徵轉化為 Prompt 關鍵詞。</li>
-										<li><strong>分鏡規劃：</strong>選定故事關鍵事件，規劃畫面構圖。</li>
-									</ul>
-								</div>
-								<div class="entry-attachment">
-									<span class="att-label">IMG: STORYBOARD_DESIGN</span>
-									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-									<img src="p3_1.jpg"
-										 data-sequence="p3_2.jpg,p3_3.jpg,p3_4.jpg"
-										 class="entry-img hover-scroll" alt="分鏡設計草圖">
-								</div>
-							</div>
-						</div>
+                        <div class="timeline-entry hybrid" style="border-left-color: #d633ff;">
+                            <div class="timeline-dot" style="background: #d633ff;"></div>
+                            <div class="entry-content">
+                                <div class="entry-header">
+                                    <span class="entry-phase">PHASE_03 // BRIDGE</span>
+                                    <span class="entry-subject" style="color:#e080ff;">CROSS-DISCIPLINARY</span>
+                                </div>
+                                <h3 class="entry-title">從文字到分鏡：設計思維導入</h3>
+                                <div class="entry-desc">
+                                    中文科與創科的交匯點。學生將文學分析轉化為工程藍圖。
+                                    <ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9em; color: #ccc;">
+                                        <li><strong>人物設定：</strong>將人物性格特徵轉化為 Prompt 關鍵詞。</li>
+                                        <li><strong>分鏡規劃：</strong>選定故事關鍵事件，規劃畫面構圖。</li>
+                                    </ul>
+                                </div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: STORYBOARD_DESIGN</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="p3_5.jpg"
+                                         data-sequence="p3_6.jpg,p3_1.jpg,p3_2.jpg,p3_3.jpg,p3_4.jpg"
+                                         class="entry-img hover-scroll" alt="分鏡設計草圖"
+                                         onclick="openLightbox(this.src)">
+                                </div>
+                            </div>
+                        </div>
 
-						<div class="timeline-entry tech">
-							<div class="timeline-dot"></div>
-							<div class="entry-content">
-								<div class="entry-header">
-									<span class="entry-phase">PHASE_04 // GENERATE</span>
-									<span class="entry-subject" style="color:#80b3ff;">STEAM & AI</span>
-								</div>
-								<h3 class="entry-title">Gemini 繪本創作實戰</h3>
-								<div class="entry-desc">
-									利用 Gemini 平台進行圖像生成。學生學習如何透過修正指令，解決「人物崩壞」或「服飾錯誤」的問題，完成符合原著精神的視覺繪本。
-								</div>
-								<div class="entry-attachment">
-									<span class="att-label">IMG: AI_GENERATION</span>
-									<span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
-									<img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070"
-										 data-sequence="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1965,https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070"
-										 class="entry-img hover-scroll" alt="AI生成過程">
-								</div>
-							</div>
-						</div>
+                        <div class="timeline-entry tech">
+                            <div class="timeline-dot"></div>
+                            <div class="entry-content">
+                                <div class="entry-header">
+                                    <span class="entry-phase">PHASE_04 // GENERATE</span>
+                                    <span class="entry-subject" style="color:#80b3ff;">STEAM & AI</span>
+                                </div>
+                                <h3 class="entry-title">Gemini 繪本創作實戰</h3>
+                                <div class="entry-desc">
+                                    利用 Gemini 平台進行圖像生成。學生學習如何透過修正指令，解決「人物崩壞」或「服飾錯誤」的問題，完成符合原著精神的視覺繪本。
+                                </div>
+                                <div class="entry-attachment">
+                                    <span class="att-label">IMG: AI_GENERATION</span>
+                                    <span class="scroll-indicator">[ SEQUENCE LOOP ]</span>
+                                    <img src="p4_1.png"
+                                         data-sequence="p4_2.png,p4_3.png"
+                                         class="entry-img hover-scroll" alt="AI生成過程"
+                                         onclick="openLightbox(this.src)">
+                                </div>
+                            </div>
+                        </div>
 
-						<div class="timeline-entry reflection">
+                        <div class="timeline-entry reflection">
                             <div class="timeline-dot"></div>
                             <div class="entry-content">
                                 <div class="entry-header">
@@ -511,13 +522,13 @@
                             </div>
                         </div>
 
-						<div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 30px; letter-spacing: 2px;">
-							// END OF LEARNING LOG //
-						</div>
+                        <div style="text-align: center; color: rgba(255,255,255,0.3); margin-top: 30px; letter-spacing: 2px;">
+                            // END OF LEARNING LOG //
+                        </div>
 
-					</div>
-				</div>
-			</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="reader-overlay" id="readerOverlay">
                 <div class="close-btn" onclick="closeBook()">[ X ]</div>
@@ -529,6 +540,11 @@
                     <div class="nav-btn next-btn" onclick="changePage(1)">❯</div>
                 </div>
                 <div class="page-info" id="pageInfo">00 / 00</div>
+            </div>
+
+            <div class="lightbox-overlay" id="imageLightbox" onclick="closeLightbox()">
+                <div class="close-btn" style="position: absolute; top: 20px; right: 20px;">[ X ]</div>
+                <img src="" class="lightbox-img" id="lightboxImg" onclick="event.stopPropagation()">
             </div>
 
         </div>
@@ -546,7 +562,7 @@
     }
 
     // ==========================================
-    // 2. 日誌 Hover Scroll 邏輯 (Phase 1,3,4,5)
+    // 2. 日誌 Hover Scroll 邏輯
     // ==========================================
     document.querySelectorAll('.hover-scroll').forEach(img => {
         const originalSrc = img.src;
@@ -630,7 +646,7 @@
     }
 
     // ==========================================
-    // 4. 閱讀器邏輯
+    // 4. 書籍閱讀器邏輯
     // ==========================================
     let currentPages = []; 
     let readerIndex = 0; 
@@ -694,30 +710,25 @@
     // 5. PHASE 02 戲劇簡單輪播
     // ==========================================
     let currentDramaIdx = 0;
-    const totalDramaSlides = 3; // 1張圖 + 2個影片
+    const totalDramaSlides = 3; 
 
     function moveDramaSlide(step) {
-        // 1. 隱藏當前 Slide
         const currentSlide = document.getElementById('drama-slide-' + currentDramaIdx);
         if (currentSlide) {
             currentSlide.style.display = 'none';
-            // 如果當前是影片，暫停播放 (索引大於0代表是影片)
             if (currentDramaIdx > 0) {
                 const vid = document.getElementById('drama-vid-' + currentDramaIdx);
                 if (vid) vid.pause();
             }
         }
 
-        // 2. 計算下一張
         currentDramaIdx += step;
         if (currentDramaIdx >= totalDramaSlides) currentDramaIdx = 0;
         if (currentDramaIdx < 0) currentDramaIdx = totalDramaSlides - 1;
 
-        // 3. 顯示新 Slide
         const nextSlide = document.getElementById('drama-slide-' + currentDramaIdx);
         if (nextSlide) nextSlide.style.display = 'block';
 
-        // 4. 更新頁碼
         const numIndicator = document.getElementById('drama-slide-num');
         if (numIndicator) {
             numIndicator.innerText = (currentDramaIdx + 1) + " / " + totalDramaSlides;
@@ -725,21 +736,18 @@
     }
 
     // ==========================================
-    // 6. PHASE 05 成果匯報輪播 (新增整合)
+    // 6. PHASE 05 成果匯報輪播 
     // ==========================================
     let currentPresentIndex = 0;
-    // 定義 Slide 的 ID 陣列 (三個皆為影片)
     const presentSlideIds = ["present-slide-0", "present-slide-1", "present-slide-2"];
 
     function movePresentSlide(n) {
-        // 1. 隱藏當前的 Slide & 暫停影片
         const oldSlide = document.getElementById(presentSlideIds[currentPresentIndex]);
         const oldVid = document.getElementById(`present-vid-${currentPresentIndex}`);
         
         if (oldSlide) oldSlide.style.display = "none";
-        if (oldVid) oldVid.pause(); // 切換時自動暫停，避免背景有聲音
+        if (oldVid) oldVid.pause(); 
 
-        // 2. 計算新的 Index (循環邏輯)
         currentPresentIndex += n;
         if (currentPresentIndex >= presentSlideIds.length) {
             currentPresentIndex = 0; 
@@ -747,25 +755,34 @@
             currentPresentIndex = presentSlideIds.length - 1; 
         }
 
-        // 3. 顯示新的 Slide
         const newSlide = document.getElementById(presentSlideIds[currentPresentIndex]);
         if (newSlide) newSlide.style.display = "block";
 
-        // 4. 更新右下角的頁碼文字
         const numDisplay = document.getElementById("present-slide-num");
         if (numDisplay) {
             numDisplay.innerText = `${currentPresentIndex + 1} / ${presentSlideIds.length}`;
         }
     }
 
+    // ==========================================
+    // 7. 單張圖片點擊放大 (Lightbox)
+    // ==========================================
+    const lightbox = document.getElementById('imageLightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    function openLightbox(src) {
+        if(!src) return;
+        lightboxImg.src = src;
+        lightbox.classList.add('active');
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        // 等待淡出動畫結束再清空 src，避免畫面突兀
+        setTimeout(() => { lightboxImg.src = ''; }, 300);
+    }
+
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
